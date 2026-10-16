@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HLL-04 Guided Data Collection</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Guided Data Collection</h1>
+  <ol id="steps" aria-label="Progress">
+    <li data-step="session">1 Session</li><li data-step="capture">2 Capture</li>
+    <li data-step="meta">3 Metadata</li><li data-step="review">4 Review &amp; export</li>
+  </ol>
+</header>
+
+<main>
+<section id="session" class="step">
+  <h2>Start a session</h2>
+  <label>Operator name <input id="operator" autocomplete="name"></label>
+  <label>Device <input id="device"></label>
+  <p class="err" id="sessionErr" role="alert"></p>
+  <button id="startBtn" class="primary">Start session</button>
+</section>
+
+<section id="capture" class="step" hidden>
+  <h2>Capture or import an image</h2>
+  <div class="cam">
+    <video id="video" autoplay playsinline muted></video>
+    <img id="preview" alt="Captured image preview" hidden>
+  </div>
+  <div class="row">
+    <button id="camBtn">Open camera</button>
+    <button id="snapBtn" disabled>Take photo</button>
+    <label class="btn">Import file <input id="fileIn" type="file" accept="image/*" hidden></label>
+  </div>
+  <p class="err" id="capErr" role="alert"></p>
+  <button id="toMeta" class="primary" disabled>Next: metadata</button>
+</section>
+
+<section id="meta" class="step" hidden>
+  <h2>Describe this record</h2>
+  <form id="metaForm" novalidate></form>
+  <p class="err" id="saveErr" role="alert"></p>
+  <div class="row">
+    <button id="backCap">Back</button>
+    <button id="saveBtn" class="primary">Save record</button>
+  </div>
+</section>
+
+<section id="review" class="step" hidden>
+  <h2>Review session <span id="sid"></span></h2>
+  <p id="summary"></p>
+  <table id="recTable"><thead><tr><th></th><th>ID</th><th>Scenario</th><th>Subject</th><th>Location</th><th>Condition</th><th></th></tr></thead><tbody></tbody></table>
+  <div class="row">
+    <button id="addMore">Add another record</button>
+    <button id="exportBtn" class="primary">Export ZIP (images + CSV + manifest)</button>
+  </div>
+</section>
+</main>
+<div id="toast" role="status" aria-live="polite"></div>
+<script type="module" src="app.js"></script>
+</body>
+</html>

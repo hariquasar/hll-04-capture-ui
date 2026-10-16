@@ -1,0 +1,11 @@
+{
+  "note": "Ground truth for the representative collection tasks. Each task = one printed task card + one object/photo. Participants record the same 6 tasks in both conditions (counterbalanced).",
+  "tasks": [
+    {"task_id": 1, "card": "Photograph the projector in Lab B5. Asset tag EQ-1021. It works normally.", "scenario": "equipment", "location": "Lab B5", "subject_id": "EQ-1021", "condition": "good"},
+    {"task_id": 2, "card": "Photograph the cracked floor tile at the corridor, 3/F Block A. Ticket FL-20417. Damage is visible.", "scenario": "indoor", "location": "3/F Block A", "subject_id": "FL-20417", "condition": "poor"},
+    {"task_id": 3, "card": "Photograph bicycle BK-3307 parked at the North Gate. Tyre slightly worn.", "scenario": "vehicle", "location": "North Gate", "subject_id": "BK-3307", "condition": "fair"},
+    {"task_id": 4, "card": "Photograph the printed delivery note DOC-5512 on the desk in Room 201. Readable.", "scenario": "document", "location": "Room 201", "subject_id": "DOC-5512", "condition": "good"},
+    {"task_id": 5, "card": "Photograph the street lamp SL-884 outside the canteen. You cannot tell if it works in daylight.", "scenario": "outdoor", "location": "Canteen", "subject_id": "SL-884", "condition": "unknown"},
+    {"task_id": 6, "card": "Photograph the fire extinguisher FE-1093 in the stairwell of Block B. Pressure gauge in the red.", "scenario": "equipment", "location": "Block B stairwell", "subject_id": "FE-1093", "condition": "poor"}
+  ]
+}

@@ -1,0 +1,29 @@
+:root { --a:#2457d6; --e:#c62828; --ok:#2e7d32; }
+* { box-sizing: border-box; }
+body { font: 16px/1.5 system-ui, sans-serif; margin: 0; color: #1a1a1a; background: #f6f7f9; }
+header { background: #fff; border-bottom: 1px solid #ddd; padding: .75rem 1rem; }
+h1 { font-size: 1.25rem; margin: 0 0 .5rem; }
+#steps { display: flex; gap: .5rem; list-style: none; padding: 0; margin: 0; flex-wrap: wrap; }
+#steps li { padding: .25rem .6rem; border-radius: 1rem; background: #eceff4; font-size: .9rem; }
+#steps li.active { background: var(--a); color: #fff; }
+#steps li.done { background: #d7e3ff; }
+main { max-width: 760px; margin: 1rem auto; padding: 0 1rem; }
+.step { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 1rem 1.25rem; }
+label { display: block; margin: .6rem 0; font-weight: 600; }
+input, select, textarea { min-height: 2.6rem; display: block; width: 100%; font: inherit; padding: .5rem; margin-top: .25rem; border: 1px solid #aaa; border-radius: 4px; font-weight: 400; }
+.invalid input, .invalid select, .invalid textarea { border-color: var(--e); }
+.field-err { color: var(--e); font-size: .9rem; font-weight: 400; min-height: 1.2em; }
+.hint { color: #444; font-weight: 400; font-size: .85rem; }
+.req::after { content: " *"; color: var(--e); }
+button, .btn { font: inherit; padding: .55rem 1rem; border: 1px solid #888; border-radius: 4px; background: #fff; cursor: pointer; display: inline-block; font-weight: 400; margin: 0; }
+button.primary { background: var(--a); color: #fff; border-color: var(--a); }
+button:disabled { opacity: .45; cursor: not-allowed; }
+.row { display: flex; gap: .5rem; flex-wrap: wrap; margin: .75rem 0; }
+.err { color: var(--e); min-height: 1.2em; }
+.cam { background: #111; border-radius: 6px; min-height: 200px; display: grid; place-items: center; overflow: hidden; }
+.cam video, .cam img { max-width: 100%; max-height: 360px; }
+table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+td, th { border-bottom: 1px solid #eee; padding: .35rem; text-align: left; }
+td img { width: 56px; height: 42px; object-fit: cover; }
+#toast { position: fixed; bottom: 1rem; left: 50%; transform: translateX(-50%); background: #222; color: #fff; padding: .5rem 1rem; border-radius: 4px; opacity: 0; transition: opacity .3s; }
+#toast.show { opacity: 1; }
