@@ -1,4 +1,7 @@
 import * as C from './core.mjs';
+import { VERSION, UI_REVISION, uiRevision } from '../core.mjs';
+const UI_VARIANT=uiRevision({ui_revision:new URLSearchParams(location.search).get('ui_revision')??undefined});
+const RESEARCH_UI=UI_VARIANT===UI_REVISION;
 import { createStorage, STUDY_SCOPE } from './storage.mjs';
 
 const $ = id => document.getElementById(id);
@@ -11,7 +14,7 @@ let imageToken = 0, imageBusy = false, cameraToken = 0, toastTimer, startupDone 
 function invalidateImages() { imageToken++; imageBusy = false; }
 const clone = value => structuredClone(value);
 const hasDraft = draft => !!(draft && (draft.image || draft.editRecordId || Object.values(draft.meta || {}).some(v => v !== '')));
-const envelope = () => ({ version: 2, session: clone(session), draft: clone(current), revision });
+const envelope = () => ({ version: 2, session: clone(session), draft: clone(current), revision, ...(RESEARCH_UI?{ui_revision:UI_VARIANT}:{}) });
 const writable = () => hasWriterLock && startupDone && !destructivePending;
 function status() {
   $('storageStatus').textContent = storageStatus;
@@ -98,7 +101,7 @@ $('discardSessionBtn').onclick = async () => {
   destructivePending=true; status(); $('discardSessionBtn').disabled=true; $('resumeBtn').disabled=true;
   await flush(true); const target = ++revision;
   $('discardSessionBtn').disabled = true;
-  const cleared = { version: 2, session: null, draft: null, revision: target };
+  const cleared = { version: 2, session: null, draft: null, revision: target, ...(RESEARCH_UI?{ui_revision:UI_VARIANT}:{}) };
   writeTail = writeTail.catch(() => {}).then(() => storage.write(cleared));
   try {
     await writeTail; session = null; current = null; invalidateImages(); committedRevision = target;
@@ -197,15 +200,17 @@ function buildForm() {
   for (const field of C.SCHEMA) {
     const f={...field,required:field.required || (field.key==='task_id' && session.study?.enabled)};
     const wrap=document.createElement('label'), title=document.createElement('span');wrap.dataset.key=f.key;
-    title.textContent=f.label+(f.required?'':' (optional)');if(f.required)title.className='req';
+    title.textContent=f.label+(f.required?(RESEARCH_UI?' (required)':''):' (optional)');if(f.required)title.className='req';
     let el;
     if(f.type==='select') {el=document.createElement('select');for(const value of ['',...f.options]){const op=document.createElement('option');op.value=value;op.textContent=value||'— choose —';el.append(op);}}
     else el=document.createElement(f.type==='textarea'?'textarea':'input');
     el.name=f.key;el.value=current.meta[f.key]??'';el.required=f.required;el.id=`field-${f.key}`;
-    const hint=document.createElement('span');hint.className='hint';hint.id=`hint-${f.key}`;hint.textContent=f.key==='task_id'&&session.study?.enabled?'Required in study mode: exact task ID 1, 2, 3, 4, 5 or 6':f.hint||'';
+    const hint=document.createElement('span');hint.className='hint';hint.id=`hint-${f.key}`;hint.textContent=f.key==='task_id'&&session.study?.enabled?'Required in study mode: exact task ID 1, 2, 3, 4, 5 or 6':f.hint||(RESEARCH_UI?(f.minLength?`At least ${f.minLength} characters`:f.maxLength?`At most ${f.maxLength} characters`:f.type==='select'?'Choose a listed option.':''):'');
     const err=document.createElement('span');err.className='field-err';err.id=`err-${f.key}`;el.setAttribute('aria-describedby',`${hint.id} ${err.id}`);
+    if(RESEARCH_UI){el.setAttribute('aria-invalid','false');err.setAttribute('aria-live','polite');}
     const check=()=>{const errors=C.validateForSession(session,{image:current.image,meta:current.meta},current.editRecordId).errors;const msg=errors[f.key]||'';err.textContent=msg;wrap.classList.toggle('invalid',!!msg);el.setAttribute('aria-invalid',String(!!msg));};
-    el.addEventListener('blur',()=>{el.dataset.touched='1';check();});
+    // The original v3 instrument keeps its first-blur feedback; the revision waits for Save.
+    if(!RESEARCH_UI)el.addEventListener('blur',()=>{el.dataset.touched='1';check();});
     for(const type of ['input','change'])el.addEventListener(type,()=>{if(!writable()||!current)return;current.meta[f.key]=el.value;dirty();if(el.dataset.touched)check();if($('saveErr').textContent){const n=Object.keys(C.validateForSession(session,{image:current.image,meta:current.meta},current.editRecordId).errors).length;$('saveErr').textContent=n?`Not saved: ${n} problem(s) to fix.`:'';}});
     wrap.append(title,el,hint,err);form.append(wrap);
   }
@@ -218,7 +223,7 @@ $('saveBtn').onclick = async () => {
   else if(session.records.length>=6){result={saved:false,errors:{record:'This prototype supports six records per session.'}};}
   else {const rec=C.makeRecord(session,current.image,current.meta);recordId=rec.record_id;result=C.trySave(session,rec);}
   if(!result.saved){
-    document.querySelectorAll('#metaForm [name]').forEach(el=>{const message=result.errors[el.name]||'';el.dataset.touched='1';el.setAttribute('aria-invalid',String(!!message));$(`err-${el.name}`).textContent=message;el.closest('label').classList.toggle('invalid',!!message);});
+    document.querySelectorAll('#metaForm [name]').forEach(el=>{const message=result.errors[el.name]||'';el.dataset.touched=RESEARCH_UI?(message?'1':''):'1';el.setAttribute('aria-invalid',String(!!message));$(`err-${el.name}`).textContent=message;el.closest('label').classList.toggle('invalid',!!message);});
     $('saveErr').textContent=`Not saved: ${Object.keys(result.errors).length} problem(s) to fix. ${result.errors.record||result.errors.image||''}`;
     document.querySelector('#metaForm .invalid input,#metaForm .invalid select,#metaForm .invalid textarea')?.focus();dirty();await persistNow();return;
   }
@@ -271,7 +276,7 @@ async function exportWork(){
   $('exportBtn').disabled=true;$('exportStored').disabled=true;
   try{
     for(const record of s.records)files.push({name:`images/${record.image.file}`,data:new Uint8Array(await(await fetch(record.image.dataUrl)).arrayBuffer())});
-    const manifest=C.toManifest(s);manifest.draft_included=!!draft;manifest.storage_at_export=exportState.label;
+    const manifest=C.toManifest(s);manifest.remote_protocol=VERSION;manifest.ui_revision=UI_VARIANT;manifest.draft_included=!!draft;manifest.storage_at_export=exportState.label;
     manifest.snapshot_source=exportState.source;manifest.loaded_from=exportState.loadedFrom;manifest.snapshot_loaded_at=exportState.loadedAt;
     manifest.data_revision_before_export=exportState.dataRevision;manifest.browser_committed_revision_before_export=exportState.committedRevision;
     files.push({name:'records.csv',data:encoder.encode(C.toCSV(s))},{name:'manifest.json',data:encoder.encode(JSON.stringify(manifest,null,2))});
@@ -296,7 +301,7 @@ async function acquireWriter(){
   });
 }
 function validState(value){
-  if(!value||typeof value!=='object')return false;
+  if(!value||typeof value!=='object'||uiRevision(value)!==UI_VARIANT)return false;
   if(value.session===null)return true;
   const s=value.session,d=value.draft;
   const imageOK=image=>image&&typeof image.dataUrl==='string'&&image.dataUrl.startsWith('data:image/')&&typeof image.sha256==='string'&&typeof image.file==='string';
@@ -329,4 +334,4 @@ const ready=(async()=>{
   status();
   if(!hasWriterLock&&session)show('review');else renderStart();
 })();
-window.__hll04={ready,flush:()=>flush(),get session(){return session;},get draft(){return current;},get persistenceFailed(){return persistenceFailed;},get storageStatus(){return storageStatus;},get hasWriterLock(){return hasWriterLock;}};
+window.__hll04={uiRevision:UI_VARIANT,ready,flush:()=>flush(),get session(){return session;},get draft(){return current;},get persistenceFailed(){return persistenceFailed;},get storageStatus(){return storageStatus;},get hasWriterLock(){return hasWriterLock;}};

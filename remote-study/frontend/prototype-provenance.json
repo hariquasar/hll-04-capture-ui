@@ -21,7 +21,7 @@
   },
   "app.js": {
     "original_sha256": "09c45572368cd5d2a5f2b2979c72c4acb05befa23b2456ebdc476b8f90d33055",
-    "instrumented_sha256": "071c64d86fdb704195d745459a3851fd31dc6c574b3535d76acc1e2d32a8aa51",
+    "instrumented_sha256": "a738d153f35bd565eef58932f7590ff2912127fd8fe3cb09fe0d152ff4fcd792",
     "identical": false
   }
 }

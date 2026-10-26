@@ -12,7 +12,11 @@ From this directory:
 python3 -m unittest -v test_handler.py test_export.py
 ```
 
-At authoring, **35 tests pass**. They cover consent before assignment, isolated P/S counters and alternating order, token isolation/expiry, full raw snapshots, idempotency and lost replies, stale writes, payload bounds, nested key restrictions, synthetic image filenames, partial questionnaires/submissions, storage failure, withdrawal races, uncertain object-operation leases, deployment policy, and private export/CSV safety. These use local storage models/adapters and do not establish actual AWS permissions, browser behavior, or human usability. Live integration must separately check Lambda permissions, DynamoDB transactions, S3 objects, exact-origin CORS, browser checkpoint/resume, submission and withdrawal.
+After the research UI revision, **38 tests pass**. They cover consent before assignment, isolated P/S counters and alternating order, token isolation/expiry, full raw snapshots, idempotency and lost replies, stale writes, immutable UI revision and legacy compatibility, private export provenance, payload bounds, nested key restrictions, synthetic image filenames, partial questionnaires/submissions, storage failure, withdrawal races, uncertain object-operation leases, deployment policy, and private export/CSV safety. These use local storage models/adapters and do not establish actual AWS permissions, browser behavior, or human usability. Live integration must separately check Lambda permissions, DynamoDB transactions, S3 objects, exact-origin CORS, browser checkpoint/resume, submission and withdrawal.
+
+## UI revision compatibility
+
+`ui_revision` is pinned when a session is created. New frontend sessions request `research-20261026-r1`; omitted fields mean `legacy-v3`, including pre-revision sessions and exact retries. Resume/checkpoint/submission reject a different revision. Credentials can still withdraw if their UI field is absent. Session responses, accepted documents, acknowledgements and private exports retain revision. No schema migration, storage replacement or participant-data deletion is required. Deploy this compatible handler first, then the frontend; keep the existing secrets and resources. The offline analyzer selects one revision and excludes the other.
 
 ## Deployment
 

@@ -5,16 +5,16 @@ Good morning. My name is Shum Ho Yin, and the project is UI design for data coll
 
 Sources
 21 October 2026 repaired source and execution evidence: docs/repair-20261021/; browser-results.json; independent-export-verification.json; eval/PROTOCOL.md
-/Users/hoyinshum/Documents/Codex/2026-10-26/for-x20/outputs/FYP-AWS-test-report-2026-10-26.md
+docs/verification-2026-10-26.md (summary of the 26 October remote walkthrough)
 26 Oct evidence: fyp-aws-submission-verification.json; independent-zip-verification.json
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/PROTOCOL.md
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/frontend/README.md
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/backend/README.md
+remote-study/PROTOCOL.md
+remote-study/frontend/README.md
+remote-study/backend/README.md
 
 ========================================================================
 
 SLIDE 2: The data collection problem
-Target: 50 seconds. Main talk target 770 seconds (12 minutes 50 seconds).
+Target: 45 seconds. Main talk target 770 seconds (12 minutes 50 seconds).
 
 Consider a basic workflow where a person copies photos into a folder and types descriptions into a spreadsheet. Each row must continue to refer to the intended image. Missing fields, mistaken filenames and plausible but incorrect descriptions are different failure modes. These are illustrative risks; I have not measured their frequency in a company. The proposed interface brings image import, metadata entry, review and export together. That can make certain mistakes easier to prevent or recover from, but it also introduces a cost: more structure may take longer or feel restrictive. The project must evaluate both the data and the work needed to produce it.
 
@@ -24,9 +24,9 @@ Sources
 ========================================================================
 
 SLIDE 3: Project objective and scope
-Target: 65 seconds. Main talk target 770 seconds (12 minutes 50 seconds).
+Target: 55 seconds. Main talk target 770 seconds (12 minutes 50 seconds).
 
-The implementation uses prepared images and four required metadata fields. There are now two separate evaluation instruments. The frozen desktop version, v2, compares the guided interface with a folder and spreadsheet. Remote-table-v3 instead compares the guided interface with a basic browser table. The new remote wrapper uses invitation entry, separate practice, timed blocks and metadata submission to AWS. It retains the original guided validation and ZIP generation, with isolated browser storage. Image bytes remain in the browser and local exports. AWS receives agreed study metadata and image hashes. These changes affect the baseline, device setting and timing endpoint, so results from the two instruments must remain separate. Company-specific requirements and acceptance criteria still need confirmation.
+The implementation uses prepared images and four required metadata fields. The working direction is image and metadata collection, and the primary comparison is remote-table-v3: guided collection versus a basic browser table. Frozen desktop v2 provides a historical or alternate folder-and-spreadsheet protocol and the standalone feature demonstration. The new remote wrapper uses invitation entry, separate practice, timed blocks and metadata submission to AWS. It retains ZIP generation and isolated browser storage. The research revision changes initial validation timing for new remote sessions and preserves legacy behavior for existing sessions. Image bytes remain in the browser and local exports. AWS receives agreed study metadata and image hashes. These changes affect the baseline, device setting and timing endpoint, so results from the two instruments must remain separate. Company-specific requirements and acceptance criteria still need confirmation.
 
 Sources
 21 October 2026 repaired source and execution evidence: docs/repair-20261021/; browser-results.json; independent-export-verification.json; eval/PROTOCOL.md
@@ -34,29 +34,79 @@ AWS Amplify Hosting user guide: https://docs.aws.amazon.com/amplify/latest/userg
 AWS manual deployments: https://docs.aws.amazon.com/amplify/latest/userguide/manual-deploys.html (accessed 21 October 2026; source preserved in docs/report-evidence/aws-manual.txt)
 work/aws-deploy-20261021/OPERATIONS.md
 work/aws-deploy-20261021/VERIFICATION-SUMMARY.json
-/Users/hoyinshum/Documents/Codex/2026-10-26/for-x20/outputs/FYP-AWS-test-report-2026-10-26.md
+docs/verification-2026-10-26.md (summary of the 26 October remote walkthrough)
 26 Oct evidence: fyp-aws-submission-verification.json; independent-zip-verification.json
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/PROTOCOL.md
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/frontend/README.md
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/backend/README.md
+remote-study/PROTOCOL.md
+remote-study/frontend/README.md
+remote-study/backend/README.md
 
 ========================================================================
 
 SLIDE 4: Design foundations
-Target: 60 seconds. Main talk target 770 seconds (12 minutes 50 seconds).
+Target: 45 seconds. Main talk target 770 seconds (12 minutes 50 seconds).
 
-The design builds on established work. Hartung and colleagues describe Open Data Kit as a modular collection architecture. Structured collection and required fields are therefore prior art, not inventions of this project. Bargas-Avila and colleagues provide guidelines for clear labels, required fields and error handling. Their discussion supports retaining entries after errors, but it does not prove that this prototype's blur-time validation is optimal. The chapter recommends feedback after submission, while this interface combines blur feedback with a final save gate. The contribution is a scoped implementation, repair and evaluation of this particular workflow. It is not a claim of superiority to ODK.
+The design builds on established work. Hartung and colleagues describe Open Data Kit as a modular collection architecture. Bargas-Avila and colleagues give guidance on clear labels, required fields and error handling. The empirical studies on the next slide test related choices with people. They support the rationale for the design and identify limits to generalization. Frozen desktop v2 used blur feedback followed by a final save gate. The remote research revision changes the initial feedback timing while keeping that historical instrument intact. This project contributes a scoped image and metadata workflow, recovery behavior and reproducible export checks. Its own comparative human evidence is still pending.
 
 Sources
 [1] https://homes.cs.washington.edu/~anderson/papers/ICTD/ICTD2010.pdf
-[2] https://doi.org/10.5772/9500
+[3] https://doi.org/10.5772/9500
+[8] https://doi.org/10.1145/2556288.2557265
+[13] https://doi.org/10.1016/j.intcom.2007.01.003
 
 ========================================================================
 
-SLIDE 5: The collection workflow
-Target: 70 seconds. Main talk target 770 seconds (12 minutes 50 seconds).
+SLIDE 5: Human evidence behind the design
+Target: 60 seconds. Main talk target 770 seconds (12 minutes 50 seconds).
 
-The guided interface has four stages: start a session, select an image, enter metadata, then inspect or edit the result before export. Review exposes every field, including task identity and notes. An edit preserves the record ID and image. This screenshot comes from the frozen v2 test on 21 October. Remote v3 reuses that guided implementation inside a study wrapper. It supplies the participant code and requires an explicit choice from the prepared fictional images. The wrapper hides camera and arbitrary image import, so this study does not assess physical capture. The landing-page link opens the remote study, which requires a private invitation. I use recorded screens for the main talk. Any live demonstration needs my own rehearsal on synthetic data.
+Three human studies support related design choices. A study with 65 participants tested bundled form improvements and found fewer submission attempts. Two of three forms also showed significantly shorter completion times. Another study with 166 participants found that explicit format rules before entry reduced errors and attempts. A study with 303 participants found better performance when errors appeared beside the affected field. These findings support clear rules and local feedback in the guided interface. They concern other tasks and implementations, so the project's own comparison must establish whether the benefits transfer.
+
+Additional panel answers
+These are results from other researchers' human studies. Seckler and colleagues tested bundled web-form improvements with 65 participants in two groups. For two of three reconstructed registration forms, mean completion time fell from 113 to 85 seconds and from 105 to 70 seconds, with significant differences. The third time difference was not significant. Submission attempts decreased for all three forms. This supports testing the combined design rather than assigning the gains to a single control.
+
+The 2011 format study involved 166 participants. Advance format specifications reduced errors and submission attempts. Explicit rules were the most efficient approach, and adding an example did not provide a further benefit. The 2012 location study involved 303 participants and six error-message positions. Messages near the erroneous field performed better than messages at the top or bottom. The right side was most satisfying and intuitive. Location evidence does not establish when a message should appear. I use these findings to justify visible asset-ID rules and feedback close to the relevant field.
+
+Additional supporting evidence needs careful interpretation. Zeleke and colleagues compared electronic and paper collection through 12 interviewers and 1,246 questionnaires per method. Overall item error rates were 0.60% electronically and 1.67% on paper. Structured inputs and several checks changed together, and the paper comparator differs from this project's browser table. Nakamura and colleagues' 2026 abstract reports 20 therapists in a randomized crossover comparison. Their tested wizard had shorter entry times, fewer errors and lower workload. Navigation and input methods also differed, and the authors reject a universal wizard advantage. None of these papers directly proves better image–metadata matching in this application.
+
+Sources and access limits
+[8] Seckler, Heinz, Bargas-Avila, Opwis and Tuch (2014). Designing usable web forms: empirical evaluation of web form improvement guidelines. CHI, 1275–1284. https://doi.org/10.1145/2556288.2557265. Full-text methods/results checked using https://research.google.com/pubs/archive/42513.pdf. N=65, original n=32 and improved n=33. Improvements were bundled. Satisfaction effects varied.
+[9] Bargas-Avila, Orsini, Piosczyk, Urwyler and Opwis (2011). Enhancing online forms: Use format specifications for fields with format restrictions to help respondents. Interacting with Computers 23(1), 33–39. https://doi.org/10.1016/j.intcom.2010.08.001. University abstract checked: https://edoc.unibas.ch/entities/publication/902d717d-b335-4297-a357-bd254f1834cf. No effect-size claim.
+[10] Seckler, Tuch, Opwis and Bargas-Avila (2012). User-friendly locations of error messages in web forms: Put them on the right side of the erroneous input field. Interacting with Computers 24(3), 107–118. https://doi.org/10.1016/j.intcom.2012.03.002. University abstract checked: https://edoc.unibas.ch/entities/publication/be021efa-b63d-4451-a5e2-3cf9da3f0555. Location and timing are separate questions.
+[11] Zeleke et al. (2019). Evaluation of Electronic and Paper-Pen Data Capturing Tools for Data Quality in a Public Health Survey in a Health and Demographic Surveillance Site, Ethiopia: Randomized Controlled Crossover Health Care Information Technology Evaluation. JMIR mHealth and uHealth 7(2), e10995. https://doi.org/10.2196/10995. Full text checked: https://mhealth.jmir.org/2019/2/e10995/. The number of questionnaires is not the number of interface users. Clinical and paper-comparison evidence is indirect here.
+[12] Nakamura, Kasahara, Miura, Kinoshita and Asao (2026). Usability of Two Clinical Registry Data-Entry Interfaces: A Randomized Crossover Study. Informatics 13(10), 171. https://doi.org/10.3390/informatics13100171. Publisher abstract checked: https://www.mdpi.com/2227-9709/13/10/171. Published 14 October 2026. Complete methods/results not verified. No effect magnitude or general wizard-superiority claim.
+
+Reference IDs match the report. External participant evidence remains separate from this project's synthetic engineering checks.
+
+========================================================================
+
+SLIDE 6: Validation revision and hypotheses
+Target: 60 seconds. Main talk target 770 seconds (12 minutes 50 seconds).
+
+The remote revision delays initial metadata errors until Save while keeping the rules visible and corrective feedback beside each field. A 2007 study found fewer repeated errors with submission-time feedback than with blur feedback, but its artificial tasks limit generalization. This is therefore a design choice to test. The strongest expectations are fewer missing values and format errors. Accuracy, completion time and SUS remain empirical questions. New sessions carry a fixed UI revision, and existing sessions keep their original behavior. The study analyzes these revisions separately. Frozen desktop v2 retains its historical blur behavior.
+
+Additional panel answers
+The remote revision responds to mixed evidence on validation timing. Bargas-Avila and colleagues' 2007 paper reports two studies with 77 and 90 participants. In the second study, mean repeated errors were 3.48 with all errors at submission, 3.17 with one error at a time after submission, and 7.25 with onBlur feedback. The overall difference was significant at p<.03, while completion-time differences were not significant. The artificial tasks used undisclosed formatting obstacles, so this is a reason to test less interruptive initial feedback rather than a universal rule.
+
+The implemented remote revision delays first metadata validation until Save. It retains visible explicit rules, required markers, nearby corrective feedback, review and recovery. A Save attempt can therefore identify problems without interrupting the first pass through the fields. No radio-control conversion is part of this revision. Frozen desktop v2 retains its original blur behavior.
+
+The protocol name remains HLL04-remote-table-v3. New sessions carry the immutable ui_revision value research-20261026-r1. An existing session without a value belongs to legacy-v3 and keeps the old behavior. Exported revision provenance and analysis selection keep these groups separate. Local verification supports the implemented revision behavior. The revision was deployed on 26 October as Amplify job 6; detailed hosted verification is recorded in docs/research-ui-change-notes.md.
+
+The primary expectations are higher completeness and fewer format errors than the browser-table condition. Factual accuracy and image–metadata matching need separate checks because a valid value can still be wrong. Completion time and SUS may improve or worsen, and the study must report both possibilities. The combined comparison cannot isolate a causal effect of validation timing. Literature supplies rationale and hypotheses, while project-specific human results remain unavailable.
+
+Sources
+[9] https://doi.org/10.1016/j.intcom.2010.08.001. Abstract checked.
+[10] https://doi.org/10.1016/j.intcom.2012.03.002. Abstract checked. Location evidence only.
+[13] Bargas-Avila, Oberholzer, Schmutz, de Vito and Opwis (2007). Usable error message presentation in the World Wide Web: Do not show errors right away. Interacting with Computers 19(3), 330–341. https://doi.org/10.1016/j.intcom.2007.01.003. Full text checked: https://interruptions.net/private/misc/Bargas-Avila-IntCom07.pdf.
+remote-study/PROTOCOL.md
+remote-study/frontend/README.md
+remote-study/backend/README.md
+docs/research-ui-change-notes.md
+
+========================================================================
+
+SLIDE 7: The collection workflow
+Target: 60 seconds. Main talk target 770 seconds (12 minutes 50 seconds).
+
+The guided interface has four stages: start a session, select an image, enter metadata, then inspect or edit the result before export. Review exposes every field, including task identity and notes. An edit preserves the record ID and image. This screenshot comes from the frozen v2 test on 21 October. The optional 90-second feature demonstration uses frozen desktop v2 and its historical blur feedback. The primary human comparison uses remote v3 with versioned validation timing inside the study wrapper. It supplies the participant code and requires an explicit choice from the prepared fictional images. The wrapper hides camera and arbitrary image import, so this study does not assess physical capture. The landing-page link opens the remote study, which requires a private invitation. I use recorded screens for the main talk. Any live demonstration needs my own rehearsal on synthetic data.
 
 Use the screenshot for the main talk. Point to task ID, exposed metadata and Edit metadata. The hyperlink is optional; do not depend on venue internet. Rehearse any live demonstration on synthetic data first.
 
@@ -67,16 +117,16 @@ work/aws-deploy-20261021/mac-live-regression/browser-results.json
 work/aws-deploy-20261021/mac-live-smoke-v2/hosted-smoke-results.json
 work/aws-deploy-20261021/linux-first-run/linux-20261021T085639Z/regression/browser-results.json
 work/aws-deploy-20261021/linux-smoke-v2/linux-smoke-v2-20261021T090308Z/hosted-smoke/hosted-smoke-results.json
-/Users/hoyinshum/Documents/Codex/2026-10-26/for-x20/outputs/FYP-AWS-test-report-2026-10-26.md
+docs/verification-2026-10-26.md (summary of the 26 October remote walkthrough)
 26 Oct evidence: fyp-aws-submission-verification.json; independent-zip-verification.json
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/PROTOCOL.md
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/frontend/README.md
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/backend/README.md
+remote-study/PROTOCOL.md
+remote-study/frontend/README.md
+remote-study/backend/README.md
 
 ========================================================================
 
-SLIDE 6: Validation at the point of entry
-Target: 65 seconds. Main talk target 770 seconds (12 minutes 50 seconds).
+SLIDE 8: Validation and data accuracy
+Target: 55 seconds. Main talk target 770 seconds (12 minutes 50 seconds).
 
 The original guided validation checks presence, format and allowed values. In study mode it also requires an assigned task ID and rejects duplicate IDs. The frozen v2 checks covered corrupt images, a failed replacement and an old asynchronous import. The 26 October remote walkthrough also tried empty guided metadata and observed five field-specific problems before saving could proceed. The measured guided block accepted six records and disabled the seventh-record control. The table deliberately preserves raw answers, including errors and blank cells, because it is the comparison condition. Validation still cannot establish truth. A value can be permitted by the schema and incorrect for a task. Accuracy therefore needs a separate check against the declared task labels.
 
@@ -84,16 +134,16 @@ Point to the inline messages and blocked-save summary.
 
 Sources
 21 October 2026 repaired source and execution evidence: docs/repair-20261021/; browser-results.json; independent-export-verification.json; eval/PROTOCOL.md
-/Users/hoyinshum/Documents/Codex/2026-10-26/for-x20/outputs/FYP-AWS-test-report-2026-10-26.md
+docs/verification-2026-10-26.md (summary of the 26 October remote walkthrough)
 26 Oct evidence: fyp-aws-submission-verification.json; independent-zip-verification.json
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/PROTOCOL.md
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/frontend/README.md
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/backend/README.md
+remote-study/PROTOCOL.md
+remote-study/frontend/README.md
+remote-study/backend/README.md
 
 ========================================================================
 
-SLIDE 7: Recovery from a storage failure
-Target: 75 seconds. Main talk target 770 seconds (12 minutes 50 seconds).
+SLIDE 9: Recovery from a storage failure
+Target: 65 seconds. Main talk target 770 seconds (12 minutes 50 seconds).
 
 The storage-recovery evidence on this slide belongs to frozen v2 on 21 October. The earlier design stored image data in localStorage and could not support the selected workload. The repair uses a transactional IndexedDB snapshot and acknowledges a save after transaction completion. In a deliberately induced abort, one record remained in durable storage while the page held two accepted records and a separate unfinished draft. The recovery ZIP retained that work separately. Retry and reload then restored it. A separate quota override did not produce a failure, so this does not prove natural quota recovery. In remote v3, the new walkthrough retained guided work and table images through refresh, but its task-reference panel reset. Preserving data and preserving the visible context are different requirements.
 
@@ -101,31 +151,31 @@ Point to the warning first. Explain that working memory and persistent storage d
 
 Sources
 21 October 2026 repaired source and execution evidence: docs/repair-20261021/; browser-results.json; independent-export-verification.json; eval/PROTOCOL.md
-/Users/hoyinshum/Documents/Codex/2026-10-26/for-x20/outputs/FYP-AWS-test-report-2026-10-26.md
+docs/verification-2026-10-26.md (summary of the 26 October remote walkthrough)
 26 Oct evidence: fyp-aws-submission-verification.json; independent-zip-verification.json
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/PROTOCOL.md
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/frontend/README.md
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/backend/README.md
+remote-study/PROTOCOL.md
+remote-study/frontend/README.md
+remote-study/backend/README.md
 
 ========================================================================
 
-SLIDE 8: Traceable export
-Target: 60 seconds. Main talk target 770 seconds (12 minutes 50 seconds).
+SLIDE 10: Traceable export
+Target: 55 seconds. Main talk target 770 seconds (12 minutes 50 seconds).
 
 The ZIP contains images, a CSV and a raw JSON manifest. Image hashes connect the metadata to particular prepared bytes. The frozen v2 test independently checked archive members, image hashes and agreement between the CSV and manifest at two checkpoints. The new remote test added actual desktop Chrome downloads for both measured conditions. Each archive contained six task metadata sets and six matching prepared images. An external reader checked CRC integrity, safe and unique paths, image hashes and CSV-to-manifest agreement. Editing a location after export cleared both file-check confirmations and marked the export stale. Restoring the value and exporting again allowed completion. These checks establish the content and consistency of the downloaded files. They do not establish scene truth or participant usability.
 
 Sources
 21 October 2026 repaired source and execution evidence: docs/repair-20261021/; browser-results.json; independent-export-verification.json; eval/PROTOCOL.md
-/Users/hoyinshum/Documents/Codex/2026-10-26/for-x20/outputs/FYP-AWS-test-report-2026-10-26.md
+docs/verification-2026-10-26.md (summary of the 26 October remote walkthrough)
 26 Oct evidence: fyp-aws-submission-verification.json; independent-zip-verification.json
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/PROTOCOL.md
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/frontend/README.md
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/backend/README.md
+remote-study/PROTOCOL.md
+remote-study/frontend/README.md
+remote-study/backend/README.md
 
 ========================================================================
 
-SLIDE 9: Engineering evaluation
-Target: 90 seconds. Main talk target 770 seconds (12 minutes 50 seconds).
+SLIDE 11: Engineering evaluation
+Target: 75 seconds. Main talk target 770 seconds (12 minutes 50 seconds).
 
 This slide separates the evidence by date and instrument. On 21 October, frozen v2 passed the 82-check regression and 42-check hosting suites on each of Mac and Linux Chrome. Linux also passed 47 Node tests, and 26 frozen kit files matched. On 26 October, an agent completed the remote v3 flow in desktop Chrome using synthetic session S005. Both measured conditions finished with six records, and both ZIPs were downloaded, opened and independently audited. The interface showed a receipt at 15:35:13 Hong Kong time. Independent AWS readback confirmed accepted sequence 43, synthetic exclusion, both completed blocks, both skipped questionnaires and no image bytes in the payload. The walkthrough also found a reset of reference context after refresh and several scrolling areas. The public build lacked a local queue safeguard, although a live slow-network failure was not reproduced. This remains engineering evidence. Agent execution time includes inspection and tool interruptions, so it cannot compare interface speed. This test supplies no human SUS result.
 
@@ -143,16 +193,16 @@ work/aws-deploy-20261021/linux-first-run/linux-20261021T085639Z/regression/brows
 work/aws-deploy-20261021/linux-smoke-v2/linux-smoke-v2-20261021T090308Z/hosted-smoke/hosted-smoke-results.json
 work/aws-deploy-20261021/test-harness-correction.txt
 work/aws-deploy-20261021/linux-first-run/linux-20261021T085639Z/hosted-smoke/hosted-smoke-results.json
-/Users/hoyinshum/Documents/Codex/2026-10-26/for-x20/outputs/FYP-AWS-test-report-2026-10-26.md
+docs/verification-2026-10-26.md (summary of the 26 October remote walkthrough)
 26 Oct evidence: fyp-aws-submission-verification.json; independent-zip-verification.json
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/PROTOCOL.md
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/frontend/README.md
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/backend/README.md
+remote-study/PROTOCOL.md
+remote-study/frontend/README.md
+remote-study/backend/README.md
 
 ========================================================================
 
-SLIDE 10: Complete metadata can still be wrong
-Target: 55 seconds. Main talk target 770 seconds (12 minutes 50 seconds).
+SLIDE 12: Complete metadata can still be wrong
+Target: 45 seconds. Main talk target 770 seconds (12 minutes 50 seconds).
 
 This earlier example belongs to one synthetic guided v2 run on 21 October. Six tasks and four required fields give twenty-four scored cells. The script deliberately chose an allowed but wrong condition for task two. The initial export was complete in twenty-four cells but correct in twenty-three. Direct editing corrected that known value. A second export was complete and correct in all twenty-four, while retaining the same record ID and image. The automation already knew the mistake. These are before-and-after checkpoints within one scripted workflow. They demonstrate why format validation and factual accuracy need separate measures. They do not show that a person made fewer errors or that guided collection outperformed the baseline.
 
@@ -163,40 +213,40 @@ Sources
 
 ========================================================================
 
-SLIDE 11: Remote workflow comparison (v3)
-Target: 80 seconds. Main talk target 770 seconds (12 minutes 50 seconds).
+SLIDE 13: Remote workflow comparison (v3)
+Target: 65 seconds. Main talk target 770 seconds (12 minutes 50 seconds).
 
-The remote human method is a new browser-table comparison. Each permitted adult volunteer uses both conditions in the same sitting on their own desktop Chrome. The server alternates starting order across assignments. Each condition starts with a separate two-minute practice and then six assigned tasks, with a fifteen-minute maximum. Both conditions show the same task cards and image choices, and require explicit image selection. The table uses raw text cells. The guided condition retains its validation and review. Block time includes checking, correction, export and self-reported file inspection, but excludes questionnaire and final-upload time. Normal completion requires a current export and file confirmations. People can also finish incomplete, reach the cap or skip. Missing tasks remain in the twenty-four-cell denominators. The exploratory target is six to eight permitted adults, subject to the required arrangements. No human observations are available for this report. Frozen v2 retains its different folder-and-spreadsheet protocol.
+The remote human method is a new browser-table comparison. Each permitted adult volunteer uses both conditions in the same sitting on their own desktop Chrome. The server alternates starting order across assignments. Each condition starts with a separate two-minute practice and then six assigned tasks, with a fifteen-minute maximum. Both conditions show the same task cards and image choices, and require explicit image selection. The table uses raw text cells. The guided condition retains validation and review, with the immutable UI revision determining when initial errors appear. Legacy and revised sessions are analyzed separately. Block time includes checking, correction, export and self-reported file inspection, but excludes questionnaire and final-upload time. Normal completion requires a current export and file confirmations. People can also finish incomplete, reach the cap or skip. Missing tasks remain in the twenty-four-cell denominators. The exploratory target is six to eight permitted adults, subject to the required arrangements. No human observations are available for this report. Frozen v2 retains its different folder-and-spreadsheet protocol.
 
 Additional panel answers
 Remote v3 changes the baseline from a folder/spreadsheet to an in-browser table, allows different participants to use different computers, and uses self-reported local file checks. It therefore cannot be silently pooled with v2. The server submission status is separate from analysis eligibility. Quality, completed timing and valid SUS each need their own eligibility and paired sample size. The synthetic S004/S005 runs cannot enter participant results. Consent screens do not imply institutional approval.
 
 Sources
 21 October 2026 repaired source and execution evidence: docs/repair-20261021/; browser-results.json; independent-export-verification.json; eval/PROTOCOL.md
-[3] https://digital.ahrq.gov/sites/default/files/docs/survey/systemusabilityscale%2528sus%2529_comp%255B1%255D.pdf
-/Users/hoyinshum/Documents/Codex/2026-10-26/for-x20/outputs/FYP-AWS-test-report-2026-10-26.md
+[4] https://digital.ahrq.gov/sites/default/files/docs/survey/systemusabilityscale%2528sus%2529_comp%255B1%255D.pdf
+docs/verification-2026-10-26.md (summary of the 26 October remote walkthrough)
 26 Oct evidence: fyp-aws-submission-verification.json; independent-zip-verification.json
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/PROTOCOL.md
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/frontend/README.md
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/backend/README.md
+remote-study/PROTOCOL.md
+remote-study/frontend/README.md
+remote-study/backend/README.md
 
 ========================================================================
 
-SLIDE 12: Current contribution and remaining work
-Target: 60 seconds. Main talk target 770 seconds (12 minutes 50 seconds).
+SLIDE 14: Current contribution and remaining work
+Target: 45 seconds. Main talk target 770 seconds (12 minutes 50 seconds).
 
 The current contribution is a guided collection prototype with validation, review, recoverable drafts and checked local exports. A separate remote instrument adds structured practice, a browser-table comparison and acknowledged metadata collection on AWS. The evidence now includes dated frozen-v2 tests and a synthetic remote Chrome run, audited ZIPs and direct AWS readback. 26 October follow-up repair: Job 5 restores reference context and strengthens checkpoint, private receipt resume and withdrawal safeguards. Guided nested scrolling remains a protocol review item. The next research step is a permitted human comparison with the exact protocol and build documented. Physical-device behavior and fit with the intended industry workflow remain open. I can defend the implemented behavior and its evidence limits. Human usability and any comparative benefit still need data. Thank you.
 
-End the main talk here. Slides 13–17 are backup slides for questions.
+End the main talk here. Slides 15–19 are backup slides for questions.
 
 Sources
 21 October 2026 repaired source and execution evidence: docs/repair-20261021/; browser-results.json; independent-export-verification.json; eval/PROTOCOL.md
 work/aws-deploy-20261021/VERIFICATION-SUMMARY.json
-/Users/hoyinshum/Documents/Codex/2026-10-26/for-x20/outputs/FYP-AWS-test-report-2026-10-26.md
+docs/verification-2026-10-26.md (summary of the 26 October remote walkthrough)
 26 Oct evidence: fyp-aws-submission-verification.json; independent-zip-verification.json
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/PROTOCOL.md
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/frontend/README.md
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/backend/README.md
+remote-study/PROTOCOL.md
+remote-study/frontend/README.md
+remote-study/backend/README.md
 docs/maintenance-2026-10-26/code-review-verification.json
 docs/maintenance-2026-10-26/aws-deployment-verification.json
 docs/maintenance-2026-10-26/deployed-files.json
@@ -211,23 +261,23 @@ docs/maintenance-2026-10-26/hosted-receipt-corrected-results.json
 
 ========================================================================
 
-SLIDE 13: Backup: Evaluation measures
+SLIDE 15: Evaluation measures
 Backup slide for questions, outside the main talk.
 
 Completeness is the fraction of all assigned required cells that are nonempty. Accuracy uses the same denominator and checks the declared truth. Six tasks give twenty-four cells per condition. Missing tasks remain missing. Task identity and selected-image hash matches are assessed separately. For remote v3, block time includes export generation and self-reported file checks, then stops before final upload. That differs from researcher-verified file inspection in v2. SUS is a ten-item zero-to-one-hundred composite. An absent answer is not imputed, and valid SUS pairs can differ from valid timing or quality pairs. Both questionnaires in synthetic session S005 were skipped, so that run has no SUS score. Human outcome data are unavailable for this report.
 
 Sources
 21 October 2026 repaired source and execution evidence: docs/repair-20261021/; browser-results.json; independent-export-verification.json; eval/PROTOCOL.md
-[3] https://digital.ahrq.gov/sites/default/files/docs/survey/systemusabilityscale%2528sus%2529_comp%255B1%255D.pdf
-/Users/hoyinshum/Documents/Codex/2026-10-26/for-x20/outputs/FYP-AWS-test-report-2026-10-26.md
+[4] https://digital.ahrq.gov/sites/default/files/docs/survey/systemusabilityscale%2528sus%2529_comp%255B1%255D.pdf
+docs/verification-2026-10-26.md (summary of the 26 October remote walkthrough)
 26 Oct evidence: fyp-aws-submission-verification.json; independent-zip-verification.json
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/PROTOCOL.md
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/frontend/README.md
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/backend/README.md
+remote-study/PROTOCOL.md
+remote-study/frontend/README.md
+remote-study/backend/README.md
 
 ========================================================================
 
-SLIDE 14: Backup: Limitations and AI assistance
+SLIDE 16: Limitations and AI assistance
 Backup slide for questions, outside the main talk.
 
 AI assistance contributed to code, tests, fixtures, analysis, writing, deployment and presentation preparation. I remain responsible for understanding and explaining the work and personally rehearsing the current build. The 26 October test was an agent-run synthetic walkthrough. It used fictional illustrations in desktop Chrome, skipped both SUS questionnaires and supplied no human ratings. The earlier Mac and Linux v2 checks remain separate. The walkthrough found a reference-context reset and nested scrolling. It also identified a public-versus-local queue difference without proving a live slow-network failure. In-app-browser export and control problems were environment-specific, while desktop Chrome downloaded both exports successfully. Cross-browser receipt recovery, withdrawal/deletion, offline and slow-network recovery, a complete set of numeric SUS answers, mobile use, accessibility conformance and hostile-input security were outside this walkthrough. No physical photographs, camera capture, human usability or industrial acceptance result is claimed.
@@ -235,27 +285,29 @@ AI assistance contributed to code, tests, fixtures, analysis, writing, deploymen
 Sources
 21 October 2026 repaired source and execution evidence: docs/repair-20261021/; browser-results.json; independent-export-verification.json; eval/PROTOCOL.md
 work/aws-deploy-20261021/VERIFICATION-SUMMARY.json
-/Users/hoyinshum/Documents/Codex/2026-10-26/for-x20/outputs/FYP-AWS-test-report-2026-10-26.md
+docs/verification-2026-10-26.md (summary of the 26 October remote walkthrough)
 26 Oct evidence: fyp-aws-submission-verification.json; independent-zip-verification.json
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/PROTOCOL.md
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/frontend/README.md
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/backend/README.md
+remote-study/PROTOCOL.md
+remote-study/frontend/README.md
+remote-study/backend/README.md
 
 ========================================================================
 
-SLIDE 15: Backup: Selected references
+SLIDE 17: Selected references
 Backup slide for questions, outside the main talk.
 
 The references establish prior work and the intended measurement method. Hartung and colleagues describe Open Data Kit's collection architecture. Bargas-Avila and colleagues discuss usable web forms, including required fields and feedback timing. Brooke's System Usability Scale supplies the questionnaire and scoring approach for the proposed comparison. The report also retains the official ODK form-logic source. None of these sources establishes that this prototype is better; that would require the project's own comparison.
 
 Sources
 [1] https://homes.cs.washington.edu/~anderson/papers/ICTD/ICTD2010.pdf
-[2] https://doi.org/10.5772/9500
-[3] https://digital.ahrq.gov/sites/default/files/docs/survey/systemusabilityscale%2528sus%2529_comp%255B1%255D.pdf
+[3] https://doi.org/10.5772/9500
+[4] https://digital.ahrq.gov/sites/default/files/docs/survey/systemusabilityscale%2528sus%2529_comp%255B1%255D.pdf
+
+Empirical research: [8] https://doi.org/10.1145/2556288.2557265; [9] https://doi.org/10.1016/j.intcom.2010.08.001; [10] https://doi.org/10.1016/j.intcom.2012.03.002; [11] https://doi.org/10.2196/10995; [12] https://doi.org/10.3390/informatics13100171; [13] https://doi.org/10.1016/j.intcom.2007.01.003. Full citations and source-access limits accompany slides 5 and 6. Reference IDs match the report.
 
 ========================================================================
 
-SLIDE 16: Backup: Recovery safeguards
+SLIDE 18: Recovery safeguards
 Backup slide for questions, outside the main talk.
 
 Recovery has a local-browser part and a server-checkpoint part. The original guided prototype keeps records, images and drafts in isolated IndexedDB storage, with transaction completion and one writer tab. The remote wrapper preserves its own progress and serializes exact idempotent requests. A server receipt follows acknowledgement. The walkthrough retained saved records and drafts after refresh, but the selected outer task-reference card reset, so the visible context could disagree with the recovered draft or table. Several scrolling areas were also a navigation observation, not a measured human effect. Public deployment job 4 matched the report’s recorded source hash and lacked the local checkpoint-busy/coalescing safeguard. Existing requests were serialized. Redundant checkpoints might delay final actions under slow responses, but the walkthrough did not reproduce that failure. The follow-up checks address reference and queue safeguards. Guided layout changes still need protocol review.
@@ -271,11 +323,11 @@ Sources
 21 October 2026 repaired source and execution evidence: docs/repair-20261021/; browser-results.json; independent-export-verification.json; eval/PROTOCOL.md
 work/aws-deploy-20261021/VERIFICATION-SUMMARY.json
 work/aws-deploy-20261021/OPERATIONS.md
-/Users/hoyinshum/Documents/Codex/2026-10-26/for-x20/outputs/FYP-AWS-test-report-2026-10-26.md
+docs/verification-2026-10-26.md (summary of the 26 October remote walkthrough)
 26 Oct evidence: fyp-aws-submission-verification.json; independent-zip-verification.json
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/PROTOCOL.md
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/frontend/README.md
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/backend/README.md
+remote-study/PROTOCOL.md
+remote-study/frontend/README.md
+remote-study/backend/README.md
 docs/maintenance-2026-10-26/code-review-verification.json
 docs/maintenance-2026-10-26/aws-deployment-verification.json
 docs/maintenance-2026-10-26/deployed-files.json
@@ -290,7 +342,7 @@ docs/maintenance-2026-10-26/hosted-receipt-corrected-results.json
 
 ========================================================================
 
-SLIDE 17: Backup: Remote v3 on AWS
+SLIDE 19: Remote v3 on AWS
 Backup slide for questions, outside the main talk.
 
 This slide describes remote-table-v3, separate from the original static v2 deployment. Amplify serves the study pages and prepared fictional assets over HTTPS. Lambda handles invitation and private session authorization. DynamoDB tracks assignments and accepted receipts, while a private S3 bucket holds metadata snapshots. The browser retains image bytes and produces local ZIP exports. Submitted study payloads include agreed task metadata, selected-image hashes, progress, timing observations and questionnaire responses, but no image contents. The S005 readback confirmed this boundary for the tested final payload. The API has private authorization and bounded small-study safeguards, but this is not a security or scale audit. The public landing page needs a private invitation. The separate human and synthetic invitations and resume credentials must remain private.
@@ -313,8 +365,8 @@ work/aws-deploy-20261021/OPERATIONS.md
 work/aws-deploy-20261021/live-after-runner-stopped.json
 work/aws-deploy-20261021/infrastructure-verification.json
 work/aws-deploy-20261021/http-and-exposure-checks.json
-/Users/hoyinshum/Documents/Codex/2026-10-26/for-x20/outputs/FYP-AWS-test-report-2026-10-26.md
+docs/verification-2026-10-26.md (summary of the 26 October remote walkthrough)
 26 Oct evidence: fyp-aws-submission-verification.json; independent-zip-verification.json
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/PROTOCOL.md
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/frontend/README.md
-/Users/hoyinshum/projects/hll-04-capture-ui/remote-study/backend/README.md
+remote-study/PROTOCOL.md
+remote-study/frontend/README.md
+remote-study/backend/README.md

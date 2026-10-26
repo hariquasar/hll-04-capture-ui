@@ -6,7 +6,7 @@ A local browser prototype: session → import → metadata → inspect/edit → 
 
 ## Remote study on AWS (v3)
 
-The separate [remote study](https://main.d3g93doyp3ywja.amplifyapp.com/) compares the guided interface with a plain browser table. It requires a private invitation and desktop Chrome. Each condition has a two-minute practice and a fifteen-minute measured cap. This is `HLL04-remote-table-v3`; its protocol and results must remain separate from the frozen desktop v2 spreadsheet/folder comparison below.
+The remote v3 study is the main research comparison; the frozen v2 prototype remains a standalone demonstration and historical alternative protocol. The separate [remote study](https://main.d3g93doyp3ywja.amplifyapp.com/) compares the guided interface with a plain browser table. It requires a private invitation and desktop Chrome. Each condition has a two-minute practice and a fifteen-minute measured cap. This is `HLL04-remote-table-v3`. New sessions use UI revision `research-20261026-r1`: explicit required labels and format rules stay visible, first validation waits for Save, and corrections clear the relevant displayed error. Existing sessions resume with `legacy-v3` behavior. The server pins the revision; analysis selects one revision and excludes the other. These are literature-informed design choices, with no demonstrated human advantage. See [research and revision notes](docs/research-ui-change-notes.md). Its protocol and results must remain separate from the frozen desktop v2 spreadsheet/folder comparison below.
 
 Amplify serves `remote-study/web/`. Lambda accepts authenticated metadata checkpoints and final submissions into private S3/DynamoDB storage. Images stay in the browser: only prepared-image filenames and hashes are submitted. A server receipt confirms acceptance; an export event alone does not prove a file downloaded or was opened. Research invitations, bearer receipts and participant exports are excluded from this public repository.
 
@@ -22,6 +22,8 @@ Open `http://127.0.0.1:18771/#invite=local-synthetic&synthetic=1`. In another te
 The [26 October agent test](docs/aws-agent-test-2026-10-26/FYP-AWS-test-report-2026-10-26.md) verified both six-record Chrome flows, real ZIP downloads and independent AWS acceptance for synthetic S005. Both questionnaires were skipped. These are engineering observations, with no human usability results, SUS scores or interface-speed conclusion.
 
 The [26 October maintenance verification](docs/verification-2026-10-26.md) records the repair, reviewed source, deployed release and subsequent synthetic checks.
+
+The literature-informed revision was published on 26 October 2026 in remote Amplify job 6. All 21 live file hashes matched the deployment; the hosted synthetic comparison passed 24 assertions and independent checks of both six-record ZIPs. [Revision and release notes](docs/research-ui-change-notes.md) record the evidence and version separation. These checks establish engineering behavior, with no human usability conclusion.
 
 ## Hosted prototype
 

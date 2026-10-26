@@ -84,6 +84,114 @@
           "added": "2026-10-21"
         }
       ]
+    },
+    {
+      "id": 8,
+      "url": "https://doi.org/10.1145/2556288.2557265",
+      "title": "M. Seckler, S. Heinz, J. A. Bargas-Avila, K. Opwis and A. N. Tuch, Designing usable web forms: empirical evaluation of web form improvement guidelines, Proceedings of CHI 2014, pp. 1275–1284",
+      "accessed": "2026-10-26",
+      "quotes": [],
+      "access_level": "Full text (methods and results) checked via author PDF https://research.google.com/pubs/archive/42513.pdf and an author-uploaded copy",
+      "supported_claims": [
+        "Between-subject study with 65 participants (32 original, 33 improved) on three reconstructed real-world registration forms.",
+        "Improvements were applied as a bundle derived from 20 web-form guidelines.",
+        "Mean completion time fell from 113 to 85 s (Sueddeutsche) and 105 to 70 s (NZZ), both significant; Spiegel fell from 104 to 85 s without a significant time difference.",
+        "Improved versions needed fewer submission trials for all three forms; satisfaction effects varied by form and scale."
+      ],
+      "limitations": [
+        "Bundled intervention: no isolated feature effect can be attributed.",
+        "Not every metric was significant.",
+        "Registration forms differ from image-metadata transcription."
+      ]
+    },
+    {
+      "id": 9,
+      "url": "https://doi.org/10.1016/j.intcom.2010.08.001",
+      "title": "J. A. Bargas-Avila, S. Orsini, H. Piosczyk, D. Urwyler and K. Opwis, Enhancing online forms: Use format specifications for fields with format restrictions to help respondents, Interacting with Computers, 23(1), 33–39, 2011",
+      "accessed": "2026-10-26",
+      "quotes": [],
+      "access_level": "Abstract only, via university repository https://edoc.unibas.ch/entities/publication/902d717d-b335-4297-a357-bd254f1834cf",
+      "supported_claims": [
+        "Experiment with 166 participants across four advance format-guidance conditions.",
+        "Giving format details in advance reduced errors and submission trials.",
+        "An explicit rule was the most efficient presentation; adding an example gave no further benefit."
+      ],
+      "limitations": [
+        "Abstract verified only; no effect sizes are reported in this report.",
+        "Does not show that an added example is harmful."
+      ]
+    },
+    {
+      "id": 10,
+      "url": "https://doi.org/10.1016/j.intcom.2012.03.002",
+      "title": "M. Seckler, A. N. Tuch, K. Opwis and J. A. Bargas-Avila, User-friendly locations of error messages in web forms: Put them on the right side of the erroneous input field, Interacting with Computers, 24(3), 107–118, 2012",
+      "accessed": "2026-10-26",
+      "quotes": [],
+      "access_level": "Abstract only, via publisher/university repository https://edoc.unibas.ch/entities/publication/be021efa-b63d-4451-a5e2-3cf9da3f0555",
+      "supported_claims": [
+        "Study with 303 participants comparing six error-message locations.",
+        "Messages near the erroneous field gave better performance than top or bottom placement.",
+        "The right-hand location was rated most satisfying and intuitive."
+      ],
+      "limitations": [
+        "Abstract verified only; no effect sizes used.",
+        "Concerns message location, not validation timing.",
+        "Prototype layout was not tested against this result."
+      ]
+    },
+    {
+      "id": 11,
+      "url": "https://doi.org/10.2196/10995",
+      "title": "A. A. Zeleke et al., Evaluation of Electronic and Paper-Pen Data Capturing Tools for Data Quality in a Public Health Survey in a Health and Demographic Surveillance Site, Ethiopia: Randomized Controlled Crossover Health Care Information Technology Evaluation, JMIR mHealth and uHealth, 7(2), e10995, 2019",
+      "accessed": "2026-10-26",
+      "quotes": [],
+      "access_level": "Full text checked at https://mhealth.jmir.org/2019/2/e10995/",
+      "supported_claims": [
+        "Randomized crossover evaluation: 12 interviewers collected 1246 questionnaires with each method in paired simultaneous interviews with randomized tool order.",
+        "Overall item error rate was 1.67% on paper and 0.60% electronically.",
+        "Questionnaires with at least one error: 41.89% paper vs 30.89% electronic.",
+        "Electronic ODK forms used number, date and skip checks, were editable, and required only identifiers."
+      ],
+      "limitations": [
+        "Indirect: clinical survey context with a paper comparator, not a browser table.",
+        "Effect cannot be assigned to one UI mechanism.",
+        "1246 questionnaires are not 1246 independent interface users."
+      ]
+    },
+    {
+      "id": 12,
+      "url": "https://doi.org/10.3390/informatics13100171",
+      "title": "K. Nakamura, Y. Kasahara, G. Miura, A. Kinoshita and T. Asao, Usability of Two Clinical Registry Data-Entry Interfaces: A Randomized Crossover Study, Informatics, 13(10), 171, 2026",
+      "accessed": "2026-10-26",
+      "quotes": [],
+      "access_level": "Early-access abstract only, via publisher page https://www.mdpi.com/2227-9709/13/10/171 (published 14 October 2026); full methods/results not verified",
+      "supported_claims": [
+        "Within-participant randomized crossover study with 20 therapists on simulated registry tasks.",
+        "The tested wizard interface was associated with shorter times, fewer errors and lower NASA-TLX workload.",
+        "Authors caution against concluding general wizard superiority."
+      ],
+      "limitations": [
+        "Abstract only; no magnitudes used.",
+        "Navigation and input methods also differed between interfaces.",
+        "Cautious supporting evidence only, not central proof."
+      ]
+    },
+    {
+      "id": 13,
+      "url": "https://doi.org/10.1016/j.intcom.2007.01.003",
+      "title": "J. A. Bargas-Avila, G. Oberholzer, P. Schmutz, M. de Vito and K. Opwis, Usable error message presentation in the World Wide Web: Do not show errors right away, Interacting with Computers, 19(3), 330–341, 2007",
+      "accessed": "2026-10-26",
+      "quotes": [],
+      "access_level": "Full text checked at https://interruptions.net/private/misc/Bargas-Avila-IntCom07.pdf",
+      "supported_claims": [
+        "Two studies with 77 and 90 undergraduate participants using forms with artificial, undisclosed format obstacles.",
+        "In the second study, mean repeated errors were 3.48 (all errors after submit), 3.17 (one at a time after submit) and 7.25 (on blur); overall difference p < .03.",
+        "No significant completion-time differences were found."
+      ],
+      "limitations": [
+        "Undisclosed obstacles differ from this schema, which shows rules in advance.",
+        "Supports testing save-time initial validation, not a universal optimal timing."
+      ]
     }
   ]
 }

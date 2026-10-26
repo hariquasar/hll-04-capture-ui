@@ -51,7 +51,7 @@ for para in paragraphs:
  if para.startswith('# '):d.add_paragraph(para[2:],style='Title');continue
  if para.startswith('## '):
   title=para[3:];h=d.add_heading(title,1)
-  if re.match(r'[1-6] ',title): h.paragraph_format.page_break_before=True
+  if title=='Abstract' or re.match(r'[1-6] ',title): h.paragraph_format.page_break_before=True
   inbody=bool(re.match(r'[1-6] ',title));continue
  if para.startswith('### '):d.add_heading(para[4:],2);continue
  if re.match(r'^Table \d+\. ',para):

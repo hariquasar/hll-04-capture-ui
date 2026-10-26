@@ -1,0 +1,89 @@
+{
+  "date": "2026-10-26",
+  "ui_revision": "research-20261026-r1",
+  "primary_study": "HLL04-remote-table-v3: Guided versus browser table",
+  "human_results_added": false,
+  "local_checks": {
+    "backend_export": 38,
+    "analysis": 22,
+    "frontend_core": 12,
+    "browser_workflow": 45,
+    "recovery": 10,
+    "slow_network": 2,
+    "six_record": 18,
+    "research_revision": 33
+  },
+  "hosted_release": {
+    "amplify_job": 6,
+    "status": "SUCCEED",
+    "completed_hkt": "2026-10-26 17:31:33",
+    "matching_served_files": 21,
+    "frozen_v2_files_unchanged": 5,
+    "synthetic_session": "S022",
+    "hosted_assertions": 24,
+    "independently_verified_zip_archives": 2,
+    "backend_identity_and_private_configuration_preserved": true
+  },
+  "report": {
+    "page_count": 53,
+    "body_words": 13547,
+    "body_word_rule": "Chapters1\u20136 prose only; excludes headings, tables/captions, front/end matter",
+    "tables": 7,
+    "figures": 2,
+    "references": 13,
+    "all_pages_visually_reviewed": true,
+    "final_changed_pages_reinspected": [
+      1,
+      2,
+      20,
+      44,
+      52
+    ],
+    "other_page_pixels_unchanged": true,
+    "files": {
+      "report-chapters-draft.docx": {
+        "sha256": "25c0a419c293f6041e36c3a51c123b59247c6142ce0b4e8b1216ca1bfa1e0045",
+        "bytes": 181861
+      },
+      "report-chapters-draft.pdf": {
+        "sha256": "965e43bccecfc0c84f4128d51b21d5bb11110f5c5560f497d1c547e1277c6b31",
+        "bytes": 463180
+      }
+    }
+  },
+  "presentation": {
+    "slides": 19,
+    "main_slides": 14,
+    "backup_slides": 5,
+    "main_talk_seconds": 770,
+    "visual_review": "All19 slides and PDF pages inspected; final citation-only changes reviewed and other page pixels unchanged",
+    "reference_numbers_match_report": true
+  },
+  "artifacts": {
+    "report-chapters-draft.docx": {
+      "sha256": "25c0a419c293f6041e36c3a51c123b59247c6142ce0b4e8b1216ca1bfa1e0045",
+      "bytes": 181861,
+      "repo_and_output_identical": true
+    },
+    "report-chapters-draft.pdf": {
+      "sha256": "965e43bccecfc0c84f4128d51b21d5bb11110f5c5560f497d1c547e1277c6b31",
+      "bytes": 463180,
+      "repo_and_output_identical": true
+    },
+    "HLL-04_Presentation.pptx": {
+      "sha256": "2b62544a47321083a8d8ba5fbfb982aa894df1ef5856294c1eea8d8275180043",
+      "bytes": 240497,
+      "repo_and_output_identical": true
+    },
+    "HLL-04_Presentation.pdf": {
+      "sha256": "e06b89aba35d793ecfec5bd38e0784b8b9bdf49c0ab0642f47418a14bda6bc9f",
+      "bytes": 438686,
+      "repo_and_output_identical": true
+    },
+    "HLL-04_Presentation_Speaker_Notes.txt": {
+      "sha256": "5d03a53700b14a249d6c39a97a6e5c494ae369f4f373659d845faf38de166ee3",
+      "bytes": 42020,
+      "repo_and_output_identical": true
+    }
+  }
+}

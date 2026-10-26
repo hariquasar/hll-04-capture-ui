@@ -101,6 +101,42 @@ class HandlerTests(unittest.TestCase):
     def checkpoint(self, sequence=1, data=None):
         return {"request_id": str(uuid.uuid4()), "sequence": sequence, "config_version": VERSION, "payload": data or payload()}
 
+    def test_revised_ui_is_pinned_and_checkpoint_document_and_ack_keep_provenance(self):
+        body = self.creation(True); body["ui_revision"] = handler.UI_REVISION
+        code, session = self.call("/session", body)
+        self.assertEqual(code, 200)
+        self.assertEqual(session["ui_revision"], handler.UI_REVISION)
+        self.assertEqual(self.call("/session", body)[1]["session_id"], session["session_id"])
+        checkpoint = self.checkpoint(); checkpoint["ui_revision"] = handler.UI_REVISION
+        code, ack = self.call("/checkpoint", checkpoint, session)
+        self.assertEqual(code, 200)
+        self.assertEqual(ack["ui_revision"], handler.UI_REVISION)
+        self.assertEqual(next(iter(self.store.documents.values()))["ui_revision"], handler.UI_REVISION)
+        self.assertEqual(self.call("/checkpoint", checkpoint, session)[1], ack)
+        self.assertEqual(self.call("/resume", {"config_version": VERSION}, session)[0], 400)
+        self.assertEqual(self.call("/resume", {"config_version": VERSION, "ui_revision": handler.UI_REVISION}, session)[1]["ui_revision"], handler.UI_REVISION)
+        altered = self.checkpoint(2); altered["ui_revision"] = handler.LEGACY_UI_REVISION
+        self.assertEqual(self.call("/checkpoint", altered, session)[0], 400)
+        self.assertEqual(self.store.sessions[session["session_id"]]["sequence"], 1)
+        # A retained credential can still withdraw even if its UI field was omitted.
+        self.assertEqual(self.call("/withdraw", {"request_id": str(uuid.uuid4()), "config_version": VERSION}, session)[0], 200)
+
+    def test_legacy_sessions_and_exact_pending_requests_keep_original_revision(self):
+        session = self.session(True)
+        self.assertEqual(session["ui_revision"], handler.LEGACY_UI_REVISION)
+        # Model a pre-revision database record without migrating it.
+        self.store.sessions[session["session_id"]].pop("ui_revision")
+        pending = self.checkpoint()
+        self.assertEqual(self.call("/checkpoint", pending, session)[0], 200)
+        resumed = self.call("/resume", {"config_version": VERSION}, session)[1]
+        self.assertEqual(resumed["ui_revision"], handler.LEGACY_UI_REVISION)
+        self.assertNotIn("ui_revision", self.store.sessions[session["session_id"]])
+        self.assertEqual(self.call("/checkpoint", pending, session)[0], 200)
+        pending["ui_revision"] = handler.UI_REVISION
+        self.assertEqual(self.call("/checkpoint", pending, session)[0], 400)
+        body = self.creation(True); body["ui_revision"] = "unknown"
+        self.assertEqual(self.call("/session", body)[0], 400)
+
     def test_explicit_consent_adult_and_version_required_before_allocating(self):
         for field, bad in (("adult", False), ("agreed", False), ("adult", 1), ("version", "older")):
             body = self.creation(); body["consent"][field] = bad

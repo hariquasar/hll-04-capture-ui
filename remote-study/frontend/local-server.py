@@ -24,5 +24,8 @@ class Handler(SimpleHTTPRequestHandler):
   result=app.handle({'rawPath':self.path.removeprefix('/api'),'requestContext':{'http':{'method':'POST','sourceIp':'192.0.2.1'}},'headers':dict(self.headers.items())|{'origin':ORIGIN,'content-type':'application/json','authorization':self.headers.get('Authorization',''),'x-study-session':self.headers.get('X-Study-Session','')},'body':raw})
   self.send_response(result['statusCode']);self.send_header('Content-Type','application/json');self.end_headers();self.wfile.write(result.get('body','').encode())
  def log_message(self,*a):pass
+class StudyServer(ThreadingHTTPServer):
+ # Chrome loads prepared assets and ES modules concurrently; backlog 5 can reset loopback requests.
+ request_queue_size=32
 print(f'Synthetic integration server at {ORIGIN}/#invite=local-synthetic&synthetic=1',flush=True)
-ThreadingHTTPServer(('127.0.0.1',PORT),Handler).serve_forever()
+StudyServer(('127.0.0.1',PORT),Handler).serve_forever()

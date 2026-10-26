@@ -13,6 +13,17 @@ The export directory must contain the backend export CLI's `sessions.json` **arr
 
 The default truth is `eval/truth.json`: the six fixed v2 label/image references reused by remote v3. Its SHA256 must equal `c15a0c6493b7e9eda805cbc309e625ce802706a37277bb2759be42de07c3500a`. An optional `--truth` path may locate an identical copy. A changed task set needs a documented new scoring/version decision, not a silent remapping.
 
+## UI revision selection
+
+The default is `--ui-revision research-20261026-r1`. The original feedback instrument
+can be analyzed separately with `--ui-revision legacy-v3`. A missing revision in
+old exports means `legacy-v3`. Each run excludes the other revision with
+`study_ui_revision_mismatch`, and also excludes disagreement between a session
+and its latest checkpoint. JSON audit entries and observation CSV rows retain
+revision; analysis format is `hll04.remote.analysis.v2`. Raw exports are unchanged.
+Never pool these revisions or call either revision's automated fixtures human
+results. The six-task truth and all outcome definitions remain the same.
+
 ## Outputs
 
 - `analysis.json`: raw entered records, drafts, SUS and comments for included sessions; session exclusion reasons; cell and image diagnostics; order and interruption context; independent outcome eligibility; condition descriptives and paired summaries; source file hashes.

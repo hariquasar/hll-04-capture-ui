@@ -4,6 +4,26 @@ Prepared 21 October 2026. This is a new remote instrument. It does not assert
 participant observations, institutional approval or a passing grade. The frozen
 desktop v2 instruments remain unchanged. Do not pool the two designs silently.
 
+## UI revisions from 26 October 2026
+
+Protocol `HLL04-remote-table-v3` now identifies UI revision separately. New sessions
+request `research-20261026-r1`. Missing revision on an existing session, creation
+request, receipt or export means `legacy-v3`; it never means the revised UI. The
+server fixes this field at creation and rejects changes during collection.
+Existing sessions keep the original first-blur feedback and their browser storage.
+The revised UI validates on Save, focuses the first invalid field, and updates
+already-shown errors as those fields are corrected. Required labels and format,
+length and choice hints are visible before entry; errors remain beside controls.
+The revision does not change task truth, scoring, categorical input controls,
+questionnaires, timers or the browser-table baseline.
+
+The session, accepted checkpoints, private export, local ZIP manifests and private
+receipt identify revision. Analyze exactly one revision at a time; the analyzer
+excludes the other and reports that reason. No participant data is migrated,
+deleted or silently pooled for this change. The [revision notes](../docs/research-ui-change-notes.md)
+map these choices to literature and describe their limitations. No human results
+or superiority claim are supplied by this revision.
+
 ## Research question and conditions
 
 For six supplied synthetic image-and-label tasks, how does the instrumented guided
@@ -18,8 +38,9 @@ Self-reported distinct participation cannot authenticate participant identity.
 
 The baseline is a plain in-browser table. It is not Microsoft Excel, LibreOffice,
 or the original folder-and-spreadsheet workflow. The guided condition reuses the
-original metadata, validation, review, edit and ZIP-export implementation with an
+original metadata schema, validation rules, review, edit and ZIP-export implementation with an
 instrumented study wrapper, prepared-image selection and isolated browser storage.
+Validation timing and rule/required-label presentation follow the pinned UI revision.
 Document the exact adapted source hashes and the differences from `src/`.
 
 Both conditions show the same six task cards, choices of prepared images and four

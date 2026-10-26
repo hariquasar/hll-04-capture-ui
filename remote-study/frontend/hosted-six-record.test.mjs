@@ -3,7 +3,7 @@ import {chromium} from 'playwright-core';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import {TASKS,FIELDS} from '../web/core.mjs';
+import {TASKS,FIELDS,UI_REVISION,VERSION,manifestFromZip} from '../web/core.mjs';
 const base=process.env.HLL04_STUDY_TEST_URL||'http://127.0.0.1:18771';
 let invite=process.env.HLL04_STUDY_INVITE||'local-synthetic';
 if(process.env.HLL04_STUDY_INVITE_FILE){const raw=(await fs.readFile(process.env.HLL04_STUDY_INVITE_FILE,'utf8')).trim();try{const p=JSON.parse(raw);invite=p.synthetic_invite||p.syntheticInvite||p.invite_code;if(!invite)throw Error('Synthetic invitation missing');}catch(e){if(raw.startsWith('{'))throw e;invite=raw;}}
@@ -19,8 +19,9 @@ try{
  await page.goto(base.replace(/\/$/,'')+'/#invite='+encodeURIComponent(invite)+'&synthetic=1');
  try{for(const id of ['adultConsent','agreeConsent','firstParticipation'])await page.locator('#'+id).check();}catch{throw Error('Synthetic consent screen unavailable. Main: '+await page.locator('#main').innerText()+'; browser errors: '+errors.join('; '));}
  await page.locator('#beginStudy').click();await page.locator('#startPractice').waitFor();
- const identity=await page.evaluate(()=>({session_id:window.__hll04study.state.session.session_id,code:window.__hll04study.state.session.participant_code,order:window.__hll04study.state.session.order}));
+ const identity=await page.evaluate(()=>({session_id:window.__hll04study.state.session.session_id,code:window.__hll04study.state.session.participant_code,ui_revision:window.__hll04study.state.session.ui_revision,order:window.__hll04study.state.session.order}));
  check('server synthetic allocation never P-code',identity.code.startsWith('S'));
+ check('server pins expected UI revision',identity.ui_revision===UI_REVISION);
  for(const condition of identity.order){
   await page.locator('#startPractice').click();
   await page.waitForFunction(()=>window.__hll04study.ready);
@@ -43,7 +44,9 @@ try{
   }
   const exportButton=condition==='baseline'?page.locator('#baselineExport'):page.frameLocator('#guidedFrame').locator('#exportBtn');
   const [download]=await Promise.all([page.waitForEvent('download'),exportButton.click()]);
-  await download.saveAs(path.join(out,condition+'-six-records.zip'));
+  const zipPath=path.join(out,condition+'-six-records.zip');await download.saveAs(zipPath);
+  const manifest=await manifestFromZip(new Blob([await fs.readFile(zipPath)]));
+  check(condition+' downloaded ZIP carries expected protocol and UI revision',manifest.ui_revision===UI_REVISION&&(manifest.remote_protocol||manifest.protocol)===VERSION);
   await page.waitForFunction(c=>!!window.__hll04study.state.payload.conditions[c].export.sha256,condition);
   const block=await page.evaluate(c=>window.__hll04study.state.payload.conditions[c],condition);
   check(condition+' six raw records retained',block.records.length===6);
@@ -58,6 +61,11 @@ try{
  }
  await page.locator('#submitStudy').click();await page.locator('#saveFinalReceipt').waitFor();
  check('final API receipt acknowledged',await page.evaluate(()=>window.__hll04study.state.session.lastReceipt.status==='submitted'));
+ check('final server receipt pins UI revision',await page.evaluate(()=>window.__hll04study.state.session.lastReceipt.ui_revision)===UI_REVISION);
+ check('final submission pins UI revision',submission?.ui_revision===UI_REVISION);
+ const receiptDownload=page.waitForEvent('download');await page.locator('#saveFinalReceipt').click();
+ const privatePath=path.join(out,'synthetic-PRIVATE-receipt.json');await (await receiptDownload).saveAs(privatePath);await fs.chmod(privatePath,0o600);
+ try{const receipt=JSON.parse(await fs.readFile(privatePath,'utf8'));check('downloaded private receipt and contained session identify UI revision',receipt.ui_revision===UI_REVISION&&receipt.session.ui_revision===UI_REVISION);}finally{await fs.unlink(privatePath);}
  check('no image bytes or credentials in submitted response',submission&&!JSON.stringify(submission).includes('data:image')&&!JSON.stringify(submission).includes('token'));
  for(const c of ['baseline','guided']){
   check(c+' six records reached final submission',submission.payload.conditions[c].records.length===6);

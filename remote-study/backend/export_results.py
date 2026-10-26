@@ -13,7 +13,7 @@ import subprocess
 import uuid
 
 VERSION = "HLL04-remote-table-v3"
-SAFE_FIELDS = ("session_id", "participant_code", "synthetic", "order", "status", "config_version", "created_at", "updated_at", "consent", "environment", "sequence", "latest_key", "withdrawal_at", "cleanup_pending")
+SAFE_FIELDS = ("session_id", "participant_code", "synthetic", "order", "status", "config_version", "ui_revision", "created_at", "updated_at", "consent", "environment", "sequence", "latest_key", "withdrawal_at", "cleanup_pending")
 CSV_POLICY = "apostrophe-v1: prefix U+0027 when original starts U+0027 or leading whitespace followed by =,+,-,@, or begins TAB/CR/LF; raw values preserved in JSON"
 
 
@@ -122,13 +122,13 @@ class AWSReader:
 
 def public_meta(meta, latest):
     withdrawn = meta["status"] == "withdrawn"
-    return {"session_id": meta["session_id"], "participant_code": meta["participant_code"], "synthetic": meta["synthetic"], "order": meta["order"], "status": meta["status"], "config_version": meta["config_version"], "created_at": meta["created_at"], "updated_at": meta["updated_at"], "consent": meta.get("consent"), "environment": {} if withdrawn else meta.get("environment", {}), "latest_sequence": meta["sequence"], "latest": None if withdrawn else latest, "withdrawal": {"received_at": meta.get("withdrawal_at"), "cleanup_pending": meta.get("cleanup_pending", False)} if withdrawn else None}
+    return {"session_id": meta["session_id"], "participant_code": meta["participant_code"], "synthetic": meta["synthetic"], "order": meta["order"], "status": meta["status"], "config_version": meta["config_version"], "ui_revision": meta.get("ui_revision", "legacy-v3"), "created_at": meta["created_at"], "updated_at": meta["updated_at"], "consent": meta.get("consent"), "environment": {} if withdrawn else meta.get("environment", {}), "latest_sequence": meta["sequence"], "latest": None if withdrawn else latest, "withdrawal": {"received_at": meta.get("withdrawal_at"), "cleanup_pending": meta.get("cleanup_pending", False)} if withdrawn else None}
 
 
 def flat_rows(sessions):
     summaries, blocks, records = [], [], []
     for session in sessions:
-        common = {k: session[k] for k in ("session_id", "participant_code", "synthetic", "status", "config_version")}
+        common = {k: session[k] for k in ("session_id", "participant_code", "synthetic", "status", "config_version", "ui_revision")}
         summaries.append({**common, "order": ">".join(session["order"]), "created_at": session["created_at"], "updated_at": session["updated_at"], "latest_sequence": session["latest_sequence"], "withdrawn": session["status"] == "withdrawn", "cleanup_pending": (session.get("withdrawal") or {}).get("cleanup_pending", False)})
         latest = session.get("latest")
         if not latest or session["status"] == "withdrawn": continue
@@ -186,7 +186,7 @@ def export(reader, output):
     sessions.sort(key=lambda x: (x["synthetic"], x["participant_code"]))
     private_write(output / "sessions.json", sessions)
     summaries, blocks, records = flat_rows(sessions)
-    common = ["session_id", "participant_code", "synthetic", "status", "config_version"]
+    common = ["session_id", "participant_code", "synthetic", "status", "config_version", "ui_revision"]
     write_csv(output / "sessions.csv", common + ["order", "created_at", "updated_at", "latest_sequence", "withdrawn", "cleanup_pending"], summaries)
     block_fields = common + ["condition", "sequence", "server_received_at", "block_status", "started_at", "ended_at", "elapsed_ms", "saved_rows", "has_draft", "questionnaire_status", "comments"] + ["export_" + x for x in ("requested_at", "sha256", "bytes", "download_requested", "opened_confirmed", "opened_confirmed_at")] + [f"sus_q{i}" for i in range(1, 11)]
     write_csv(output / "blocks.csv", block_fields, blocks)

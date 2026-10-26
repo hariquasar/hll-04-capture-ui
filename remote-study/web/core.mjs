@@ -1,4 +1,7 @@
 export const VERSION='HLL04-remote-table-v3';
+export const UI_REVISION='research-20261026-r1', LEGACY_UI_REVISION='legacy-v3';
+// Missing provenance belongs to the original instrument, never the revised UI.
+export function uiRevision(value){const revision=value?.ui_revision??LEGACY_UI_REVISION;if(![LEGACY_UI_REVISION,UI_REVISION].includes(revision))throw Object.assign(Error('Unsupported study UI revision. Existing work has been kept.'),{code:'ui_revision_mismatch'});return revision;}
 export const PRACTICE_MS=120000, BLOCK_MS=900000;
 export const FIELDS=['task_id','scenario','location','subject_id','condition','notes'];
 export const TASKS=[

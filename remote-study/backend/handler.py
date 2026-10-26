@@ -14,6 +14,9 @@ import time
 import uuid
 
 VERSION = "HLL04-remote-table-v3"
+UI_REVISION = "research-20261026-r1"
+LEGACY_UI_REVISION = "legacy-v3"
+UI_REVISIONS = {LEGACY_UI_REVISION, UI_REVISION}
 CONSENT_VERSION = "HLL04-remote-consent-v1"
 MAX_BODY = 65536
 MAX_CHECKPOINTS = 300
@@ -189,7 +192,7 @@ class App:
 
     def assignment(self, session, include_token=False):
         result = {key: session[key] for key in ("session_id", "participant_code", "order", "sequence", "status", "config_version")}
-        result.update(server_received_at=session["updated_at"], expires_at=iso(session["auth_expires_at"]), withdrawal_expires_at=iso(session["expires_at"]))
+        result.update(ui_revision=session.get("ui_revision", LEGACY_UI_REVISION), server_received_at=session["updated_at"], expires_at=iso(session["auth_expires_at"]), withdrawal_expires_at=iso(session["expires_at"]))
         if include_token:
             result["token"] = self.token(session["session_id"])
         return result
@@ -211,8 +214,9 @@ class App:
         return session
 
     def create(self, body, ip):
-        keys(body, {"request_id", "config_version", "invite_code", "synthetic", "consent", "environment"})
+        keys(body, {"request_id", "config_version", "invite_code", "synthetic", "consent", "environment"}, {"ui_revision"})
         request_uuid(body["request_id"])
+        oneof(body.get("ui_revision", LEGACY_UI_REVISION), UI_REVISIONS)
         boolean(body["synthetic"])
         string(body["invite_code"], 128, False)
         consent = body["consent"]
@@ -240,7 +244,7 @@ class App:
             return self.assignment(old, True)
         sid = str(uuid.uuid4())
         meta = {"session_id": sid, "synthetic": body["synthetic"], "token_hash": digest(self.token(sid)), "create_sha256": fingerprint,
-                "config_version": VERSION, "sequence": 0, "status": "active", "created_at": iso(now), "updated_at": iso(now),
+                "config_version": VERSION, "ui_revision": body.get("ui_revision", LEGACY_UI_REVISION), "sequence": 0, "status": "active", "created_at": iso(now), "updated_at": iso(now),
                 "auth_expires_at": now + 14400, "expires_at": now + int(self.config.get("RETENTION_DAYS", 90)) * 86400,
                 "consent": dict(consent, accepted_at=iso(now)), "environment": env, "latest_key": None, "cleanup_pending": False}
         session = self.store.allocate_session(key, meta, now, int(self.config.get("DAILY_SESSION_LIMIT", 100)))
@@ -249,7 +253,7 @@ class App:
         return self.assignment(session, True)
 
     def checkpoint(self, session, body, terminal):
-        keys(body, {"request_id", "sequence", "config_version", "payload"})
+        keys(body, {"request_id", "sequence", "config_version", "payload"}, {"ui_revision"})
         request_uuid(body["request_id"])
         integer(body["sequence"], 1, MAX_CHECKPOINTS + (1 if terminal else 0))
         validate_payload(body["payload"])
@@ -269,9 +273,9 @@ class App:
             raise APIError(409, "sequence_conflict", "Resume before sending a newer sequential checkpoint")
         now = iso(self.clock())
         document = {key: session[key] for key in ("session_id", "participant_code", "synthetic", "order", "consent", "environment", "config_version")}
-        document.update(schema="hll04.remote.record.v1", sequence=body["sequence"], request_id=body["request_id"],
+        document.update(ui_revision=session.get("ui_revision", LEGACY_UI_REVISION), schema="hll04.remote.record.v1", sequence=body["sequence"], request_id=body["request_id"],
                         kind="submission" if terminal else "checkpoint", server_received_at=now, payload=body["payload"])
-        ack = {"receipt_id": body["request_id"], "sequence": body["sequence"], "status": "submitted" if terminal else "active", "server_received_at": now, "config_version": VERSION}
+        ack = {"receipt_id": body["request_id"], "sequence": body["sequence"], "status": "submitted" if terminal else "active", "server_received_at": now, "config_version": VERSION, "ui_revision": session.get("ui_revision", LEGACY_UI_REVISION)}
         try:
             self.store.commit_checkpoint(session, document, fingerprint, ack)
         except Conflict:
@@ -287,21 +291,25 @@ class App:
         if path == "/session":
             return 200, self.create(body, ip)
         session = self.authenticate(headers, withdrawal=path == "/withdraw")
+        # Missing revision is the original client. Never let a checkpoint switch UI.
+        if path != "/withdraw" or "ui_revision" in body:
+            if body.get("ui_revision", LEGACY_UI_REVISION) != session.get("ui_revision", LEGACY_UI_REVISION):
+                fail("Study UI revision mismatch; resume with the original instrument")
         if path == "/resume":
-            keys(body, {"config_version"})
+            keys(body, {"config_version"}, {"ui_revision"})
             result = self.assignment(session)
             result["checkpoint"] = self.store.read_checkpoint(session["latest_key"])["payload"] if session["latest_key"] and session["status"] != "withdrawn" else None
             result["cleanup_pending"] = session.get("cleanup_pending", False)
             return 200, result
         if path in ("/checkpoint", "/submit"):
             return 200, self.checkpoint(session, body, terminal=path == "/submit")
-        keys(body, {"request_id", "config_version"})
+        keys(body, {"request_id", "config_version"}, {"ui_revision"})
         request_uuid(body["request_id"])
         # Withdrawal is a terminal exclusion even if object deletion temporarily fails.
         receipt = self.store.mark_withdrawn(session, body["request_id"], iso(self.clock()))
         pending = not self.store.purge_session(session["session_id"])
         self.store.set_cleanup_pending(session["session_id"], pending)
-        return (202 if pending else 200), dict(receipt, cleanup_pending=pending)
+        return (202 if pending else 200), dict(receipt, cleanup_pending=pending, ui_revision=session.get("ui_revision", LEGACY_UI_REVISION))
 
     def handle(self, event):
         headers = {str(k).lower(): str(v) for k, v in (event.get("headers") or {}).items()}

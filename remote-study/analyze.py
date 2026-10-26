@@ -14,6 +14,8 @@ from pathlib import Path
 from statistics import mean, median
 
 VERSION = "HLL04-remote-table-v3"
+UI_REVISION = "research-20261026-r1"
+LEGACY_UI_REVISION = "legacy-v3"
 FROZEN_TRUTH_SHA256 = "c15a0c6493b7e9eda805cbc309e625ce802706a37277bb2759be42de07c3500a"
 SCHEMA = "hll04.remote.record.v1"
 CONDITIONS = ("baseline", "guided")
@@ -254,9 +256,11 @@ def ineligibility(row, metric):
     return row["identity_flags"] + row["quality_flags"]
 
 
-def analyze_sessions(sessions, truth):
+def analyze_sessions(sessions, truth, ui_revision=UI_REVISION):
     if not isinstance(sessions, list):
         raise ValueError("sessions.json must be an array from the private export CLI")
+    if ui_revision not in (UI_REVISION, LEGACY_UI_REVISION):
+        raise ValueError("Unsupported study UI revision")
     truth = validate_truth(truth)
     if any(not isinstance(s, dict) for s in sessions):
         raise ValueError("Every session must be an object")
@@ -274,6 +278,9 @@ def analyze_sessions(sessions, truth):
             reasons.append("withdrawn_session")
         if session.get("config_version") != VERSION:
             reasons.append("study_version_mismatch")
+        revision = session.get("ui_revision", LEGACY_UI_REVISION)
+        if revision != ui_revision:
+            reasons.append("study_ui_revision_mismatch")
         if type(session.get("synthetic")) is not bool:
             reasons.append("missing_or_invalid_synthetic_marker")
         if not isinstance(sid, str) or not sid.strip():
@@ -301,6 +308,8 @@ def analyze_sessions(sessions, truth):
                 for key, expected in (("schema", SCHEMA), ("config_version", VERSION), ("session_id", sid), ("participant_code", pid), ("synthetic", session.get("synthetic")), ("order", session.get("order"))):
                     if latest.get(key) != expected:
                         reasons.append("latest_metadata_disagreement:" + key)
+                if latest.get("ui_revision", LEGACY_UI_REVISION) != revision:
+                    reasons.append("latest_metadata_disagreement:ui_revision")
                 if not isinstance(latest.get("payload"), dict) or not isinstance(latest.get("payload", {}).get("conditions"), dict):
                     reasons.append("missing_or_invalid_snapshot")
                 else:
@@ -310,7 +319,7 @@ def analyze_sessions(sessions, truth):
                     if any(not isinstance(b, dict) for b in payload["conditions"].values()):
                         reasons.append("condition_block_not_object")
         entry = {"session_id": sid, "participant_code": pid, "status": session.get("status"),
-            "synthetic": synthetic, "withdrawn": withdrawn, "included": not reasons,
+            "ui_revision": revision, "synthetic": synthetic, "withdrawn": withdrawn, "included": not reasons,
             "exclusion_reasons": reasons, "assigned_order": session.get("order"),
             "latest_sequence": session.get("latest_sequence"), "snapshot_present": latest is not None}
         audit.append(entry)
@@ -323,6 +332,7 @@ def analyze_sessions(sessions, truth):
         entry["order_deviation"] = len(entry["actual_order_from_client_starts"]) == 2 and entry["actual_order_from_client_starts"] != session["order"]
         for condition in CONDITIONS:
             row = observation(session, condition, payload, truth)
+            row["ui_revision"] = revision
             row["actual_order_from_client_starts"] = entry["actual_order_from_client_starts"]
             row["actual_position_from_client_starts"] = entry["actual_order_from_client_starts"].index(condition) + 1 if condition in entry["actual_order_from_client_starts"] else None
             row["order_deviation"] = entry["order_deviation"]
@@ -357,7 +367,7 @@ def analyze_sessions(sessions, truth):
             "included_sessions": len(usable),
             "both_blocks_completed": sum(all(indexed[(s["participant_code"], c)]["completed"] for c in CONDITIONS) for s in usable),
             "complete_pairs_by_outcome": {metric: sum(any(p["participant_code"] == s["participant_code"] for p in paired[metric]["pairs"]) for s in usable) for metric in OUTCOMES}})
-    return {"analysis_version": "hll04.remote.analysis.v1", "config_version": VERSION,
+    return {"analysis_version": "hll04.remote.analysis.v2", "config_version": VERSION, "ui_revision": ui_revision,
         "unit": "participant; six synthetic tasks per condition; 24 required metadata cells",
         "counts": {"exported_sessions": len(sessions), "included_human_sessions": len(included),
             "synthetic_sessions_excluded": sum(s["synthetic"] for s in audit),
@@ -397,7 +407,7 @@ def write_outputs(result, output):
         if (output / name).exists():
             raise ValueError("Refusing to overwrite existing analysis output: " + str(output / name))
     (output / "analysis.json").write_text(json.dumps(result, indent=2, ensure_ascii=False, allow_nan=False) + "\n", encoding="utf-8")
-    columns = ["participant_code", "session_id", "condition", "assigned_position", "actual_position_from_client_starts", "actual_order_from_client_starts", "order_deviation", "session_status", "status", "attempted", "completed",
+    columns = ["participant_code", "session_id", "ui_revision", "condition", "assigned_position", "actual_position_from_client_starts", "actual_order_from_client_starts", "order_deviation", "session_status", "status", "attempted", "completed",
                *OUTCOMES, "raw_elapsed_ms", "quality_eligible", "identity_flags", "quality_flags", "time_ineligibility", "sus_ineligibility",
                "raw_sus", "comments", "draft_present", "export_generated_reported", "export_download_requested",
                "export_opened_confirmed_self_report", "environment", "session_interruption_counts", "flags", "raw_records"]
@@ -422,6 +432,8 @@ def main():
     parser.add_argument("export_directory", type=Path, help="Private export directory containing sessions.json")
     parser.add_argument("--out", required=True, type=Path, help="New private analysis directory, outside the raw export")
     parser.add_argument("--truth", type=Path, default=Path(__file__).resolve().parents[1] / "eval" / "truth.json")
+    parser.add_argument("--ui-revision", choices=(UI_REVISION, LEGACY_UI_REVISION), default=UI_REVISION,
+                        help="Analyze exactly one UI revision; original unversioned v3 exports are legacy-v3")
     args = parser.parse_args()
     root, output = args.export_directory.resolve(), args.out.resolve()
     if output == root or root in output.parents:
@@ -429,7 +441,7 @@ def main():
     source = root / "sessions.json"
     if digest(args.truth) != FROZEN_TRUTH_SHA256:
         parser.error("Truth SHA256 differs from the six frozen v3-reused task labels/images; do not remap silently")
-    result = analyze_sessions(read_json(source), read_json(args.truth))
+    result = analyze_sessions(read_json(source), read_json(args.truth), args.ui_revision)
     result["generated_at"] = datetime.now(timezone.utc).isoformat()
     result["sources"] = {"sessions_json": str(source), "sessions_sha256": digest(source),
                          "truth_json": str(args.truth.resolve()), "truth_sha256": digest(args.truth)}

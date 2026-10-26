@@ -54,6 +54,23 @@ class ExportTests(unittest.TestCase):
                     self.assertNotIn("MUST NOT EXPORT", path.read_text())
             with self.assertRaises(ValueError): export.export(reader, out)
 
+    def test_ui_revision_survives_private_projection_json_and_csv(self):
+        self.assertIn("ui_revision", export.SAFE_FIELDS)
+        for revision in (None, "research-20261026-r1"):
+            with tempfile.TemporaryDirectory() as directory:
+                reader = Reader()
+                if revision:
+                    reader.meta["ui_revision"] = revision
+                    reader.document_value["ui_revision"] = revision
+                out = Path(directory) / "new"
+                export.export(reader, out)
+                expected = revision or "legacy-v3"
+                self.assertEqual(json.loads((out / "sessions.json").read_text())[0]["ui_revision"], expected)
+                with (out / "records.csv").open() as stream:
+                    self.assertIn("ui_revision", next(csv.reader(stream)))
+                with (out / "blocks.csv").open() as stream:
+                    self.assertEqual(next(csv.DictReader(stream))["ui_revision"], expected)
+
     def test_withdrawn_never_downloads(self):
         with tempfile.TemporaryDirectory() as d:
             reader = Reader(withdrawn=True); out = Path(d) / "new"

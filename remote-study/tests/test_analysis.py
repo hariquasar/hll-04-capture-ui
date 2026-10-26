@@ -46,14 +46,14 @@ def session(number=1, synthetic=False):
     order = ["baseline", "guided"] if number % 2 else ["guided", "baseline"]
     environment = {"user_agent": "SYNTHETIC_UNIT_TEST", "platform": "fixture", "viewport_width": 1280}
     consent = {"agreed": True, "adult": True, "version": "HLL04-remote-consent-v1"}
-    snapshot = {"schema": analysis.SCHEMA, "config_version": analysis.VERSION,
+    snapshot = {"schema": analysis.SCHEMA, "config_version": analysis.VERSION, "ui_revision": analysis.UI_REVISION,
                 "session_id": sid, "participant_code": pid, "synthetic": synthetic,
                 "order": order, "consent": consent, "environment": environment,
                 "sequence": 3, "server_received_at": "2026-10-21T00:05:00Z",
                 "payload": {"phase": "complete", "conditions": {c: block(c) for c in analysis.CONDITIONS},
                             "events": [], "interruption_counts": {"hidden": 0, "reload": 0}}}
     return {"session_id": sid, "participant_code": pid, "synthetic": synthetic,
-            "order": order, "status": "submitted", "config_version": analysis.VERSION,
+            "order": order, "status": "submitted", "config_version": analysis.VERSION, "ui_revision": analysis.UI_REVISION,
             "consent": consent, "environment": environment, "latest_sequence": 3,
             "latest": snapshot, "withdrawal": None}
 
@@ -67,6 +67,22 @@ def run(item):
 
 
 class AnalysisTests(unittest.TestCase):
+    def test_ui_revisions_never_pool_and_original_exports_remain_analyzable(self):
+        revised, legacy = session(1), session(2)
+        legacy.pop("ui_revision")
+        legacy["latest"].pop("ui_revision")
+        report = run([revised, legacy])
+        self.assertEqual(report["ui_revision"], analysis.UI_REVISION)
+        self.assertEqual(report["counts"]["included_human_sessions"], 1)
+        self.assertIn("study_ui_revision_mismatch", report["sessions"][1]["exclusion_reasons"])
+        self.assertEqual({r["ui_revision"] for r in report["observations"]}, {analysis.UI_REVISION})
+        old = analysis.analyze_sessions([revised, legacy], TRUTH, analysis.LEGACY_UI_REVISION)
+        self.assertEqual(old["counts"]["included_human_sessions"], 1)
+        self.assertEqual(old["observations"][0]["participant_code"], "P002")
+        legacy["ui_revision"] = analysis.UI_REVISION
+        mismatch = run(legacy)
+        self.assertIn("latest_metadata_disagreement:ui_revision", mismatch["sessions"][0]["exclusion_reasons"])
+
     def test_six_tasks_have_24_cells_and_separate_image_hashes(self):
         report = run(session())
         row = report["observations"][0]
