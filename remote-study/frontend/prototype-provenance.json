@@ -1,0 +1,27 @@
+{
+  "index.html": {
+    "original_sha256": "99e98d33605cc6c62cc2149c6d47ff1a1d4f8c25a6aa15bc8c1045fed7eb9f4c",
+    "instrumented_sha256": "99e98d33605cc6c62cc2149c6d47ff1a1d4f8c25a6aa15bc8c1045fed7eb9f4c",
+    "identical": true
+  },
+  "style.css": {
+    "original_sha256": "97cf9a7eb67e9a8e07e9988430eb11fb2a44bf156e45d32bfbe972c252c587f9",
+    "instrumented_sha256": "97cf9a7eb67e9a8e07e9988430eb11fb2a44bf156e45d32bfbe972c252c587f9",
+    "identical": true
+  },
+  "core.mjs": {
+    "original_sha256": "41c0254f4f16183b10db01cb32a46296aecd0c91dd0547231e3fd49d1a393f07",
+    "instrumented_sha256": "41c0254f4f16183b10db01cb32a46296aecd0c91dd0547231e3fd49d1a393f07",
+    "identical": true
+  },
+  "storage.mjs": {
+    "original_sha256": "911c20b9cc4eedf29c6d23485d2e9b9aa2bb15fb6fdb6d53992c9e7f517dbd3a",
+    "instrumented_sha256": "f30e8e84d5839639add64386224929a7c34e4cc01450da8d0b8fb28691330ebc",
+    "identical": false
+  },
+  "app.js": {
+    "original_sha256": "09c45572368cd5d2a5f2b2979c72c4acb05befa23b2456ebdc476b8f90d33055",
+    "instrumented_sha256": "071c64d86fdb704195d745459a3851fd31dc6c574b3535d76acc1e2d32a8aa51",
+    "identical": false
+  }
+}

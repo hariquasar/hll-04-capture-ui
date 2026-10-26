@@ -1,11 +1,77 @@
 {
-  "note": "Ground truth for the representative collection tasks. Each task = one printed task card + one object/photo. Participants record the same 6 tasks in both conditions (counterbalanced).",
+  "note": "Six controlled synthetic illustration-and-label transcription tasks. Same exact prepared PNGs and cards in both conditions on one laptop; no claim of industrial representativeness or physical condition assessment. No human observations.",
   "tasks": [
-    {"task_id": 1, "card": "Photograph the projector in Lab B5. Asset tag EQ-1021. It works normally.", "scenario": "equipment", "location": "Lab B5", "subject_id": "EQ-1021", "condition": "good"},
-    {"task_id": 2, "card": "Photograph the cracked floor tile at the corridor, 3/F Block A. Ticket FL-20417. Damage is visible.", "scenario": "indoor", "location": "3/F Block A", "subject_id": "FL-20417", "condition": "poor"},
-    {"task_id": 3, "card": "Photograph bicycle BK-3307 parked at the North Gate. Tyre slightly worn.", "scenario": "vehicle", "location": "North Gate", "subject_id": "BK-3307", "condition": "fair"},
-    {"task_id": 4, "card": "Photograph the printed delivery note DOC-5512 on the desk in Room 201. Readable.", "scenario": "document", "location": "Room 201", "subject_id": "DOC-5512", "condition": "good"},
-    {"task_id": 5, "card": "Photograph the street lamp SL-884 outside the canteen. You cannot tell if it works in daylight.", "scenario": "outdoor", "location": "Canteen", "subject_id": "SL-884", "condition": "unknown"},
-    {"task_id": 6, "card": "Photograph the fire extinguisher FE-1093 in the stairwell of Block B. Pressure gauge in the red.", "scenario": "equipment", "location": "Block B stairwell", "subject_id": "FE-1093", "condition": "poor"}
-  ]
+    {
+      "task_id": "1",
+      "card": "Import/copy the prepared synthetic illustration task-01.png; enter the exact labels printed on Task 1. Do not take a photograph or infer condition.",
+      "scenario": "equipment",
+      "location": "Lab B5",
+      "subject_id": "EQ-1021",
+      "condition": "good",
+      "image_file": "task-01.png",
+      "image_sha256": "af9590cc0c587e86b858e36ea73e5a5393be0a0d999910cfd822402d799e5ecb"
+    },
+    {
+      "task_id": "2",
+      "card": "Import/copy the prepared synthetic illustration task-02.png; enter the exact labels printed on Task 2. Do not take a photograph or infer condition.",
+      "scenario": "indoor",
+      "location": "3/F Block A",
+      "subject_id": "FL-20417",
+      "condition": "poor",
+      "image_file": "task-02.png",
+      "image_sha256": "0e2ebddde5a2d74e28d09ede885c09290153440ba06fec9597abd13e4ed3a9d2"
+    },
+    {
+      "task_id": "3",
+      "card": "Import/copy the prepared synthetic illustration task-03.png; enter the exact labels printed on Task 3. Do not take a photograph or infer condition.",
+      "scenario": "vehicle",
+      "location": "North Gate",
+      "subject_id": "BK-3307",
+      "condition": "fair",
+      "image_file": "task-03.png",
+      "image_sha256": "14a55895e423fc61e4307ab7085dc8378af4e1f4021c67cdc9b0542f8e9acb05"
+    },
+    {
+      "task_id": "4",
+      "card": "Import/copy the prepared synthetic illustration task-04.png; enter the exact labels printed on Task 4. Do not take a photograph or infer condition.",
+      "scenario": "document",
+      "location": "Room 201",
+      "subject_id": "DOC-5512",
+      "condition": "good",
+      "image_file": "task-04.png",
+      "image_sha256": "bd1a80935da824146d3264d0283831e55864b7a7c9e2c85ddba0729aaca7d9be"
+    },
+    {
+      "task_id": "5",
+      "card": "Import/copy the prepared synthetic illustration task-05.png; enter the exact labels printed on Task 5. Do not take a photograph or infer condition.",
+      "scenario": "outdoor",
+      "location": "Canteen",
+      "subject_id": "SL-884",
+      "condition": "unknown",
+      "image_file": "task-05.png",
+      "image_sha256": "a6f7cbb1a0ec5df45d29b51a449f6393002a0f5ee91b0a22f03d7ad1cf182480"
+    },
+    {
+      "task_id": "6",
+      "card": "Import/copy the prepared synthetic illustration task-06.png; enter the exact labels printed on Task 6. Do not take a photograph or infer condition.",
+      "scenario": "equipment",
+      "location": "Block B stairwell",
+      "subject_id": "FE-1093",
+      "condition": "poor",
+      "image_file": "task-06.png",
+      "image_sha256": "8bf6d82980c0dcd5f60847a7b2bfd45108e44fcbf496c4b42834f797995e770c"
+    }
+  ],
+  "version": "HLL04-desktop-transcription-v2",
+  "scoring": {
+    "required_fields": [
+      "scenario",
+      "location",
+      "subject_id",
+      "condition"
+    ],
+    "normalization": "trim surrounding whitespace and compare case-insensitively",
+    "synonyms": {},
+    "metadata_cells_per_condition": 24
+  }
 }

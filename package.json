@@ -1,1 +1,1 @@
-{"name":"hll-04-capture-ui","private":true,"type":"module","scripts":{"test":"node --test tests/core.test.mjs","e2e":"node tests/e2e.mjs"},"devDependencies":{"playwright-core":"^1.64.1"}}
+{"name":"hll-04-capture-ui","private":true,"type":"module","scripts":{"test":"node --test tests/*.test.mjs","e2e":"node tests/e2e.mjs"},"devDependencies":{"playwright-core":"^1.64.1"}}

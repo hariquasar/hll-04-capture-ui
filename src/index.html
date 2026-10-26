@@ -14,52 +14,80 @@
     <li data-step="meta">3 Metadata</li><li data-step="review">4 Review &amp; export</li>
   </ol>
 </header>
-
 <main>
+<p id="storageStatus" role="status" aria-live="polite">Opening browser storage…</p>
+<aside id="writerBlocked" role="status" hidden>
+  <h2>This page is read-only</h2>
+  <p id="writerReason">Another tab is editing this collection. Close that tab, then reload here to edit. You can export the last committed snapshot shown here.</p>
+</aside>
+<aside id="storageWarning" role="alert" hidden>
+  <p id="storageWarningText">Changes are in memory only. Export before closing or reloading. Retry saving when storage is available.</p>
+  <button id="retryStorage">Retry saving to browser</button>
+  <button id="storageReview">Review and export</button>
+</aside>
 <section id="session" class="step">
-  <h2>Start a session</h2>
-  <label>Operator name <input id="operator" autocomplete="name"></label>
-  <label>Device <input id="device"></label>
+  <h2>Start or resume a session</h2>
+  <div id="resumePanel" hidden>
+    <p id="resumeSummary"></p>
+    <button id="resumeBtn" class="primary">Resume session and draft</button>
+    <button id="cancelResume">Not now — keep saved work</button>
+    <button id="exportStored">Export saved work</button>
+    <button id="discardSessionBtn" class="danger">Discard session permanently</button>
+    <p id="resumeMessage" role="status"></p>
+  </div>
+  <div id="startForm" hidden>
+    <label>Operator name <input id="operator" autocomplete="name"></label>
+    <label>Device <input id="device"></label>
+    <label class="checkbox"><input id="studyMode" type="checkbox"> Study mode: require unique task IDs 1–6</label>
+    <p class="hint">Study mode uses six fixed task IDs. Ordinary collection keeps task IDs optional. This setting does not authorize a participant study.</p>
+    <button id="startBtn" class="primary">Start session</button>
+  </div>
   <p class="err" id="sessionErr" role="alert"></p>
-  <button id="startBtn" class="primary">Start session</button>
 </section>
-
 <section id="capture" class="step" hidden>
   <h2>Capture or import an image</h2>
+  <p class="hint">Use PNG, JPEG or WebP, up to 10 MiB per image and six records per session. Storage availability varies: check the save status and keep an exported backup.</p>
   <div class="cam">
-    <video id="video" autoplay playsinline muted></video>
-    <img id="preview" alt="Captured image preview" hidden>
+    <video id="video" autoplay playsinline muted hidden></video>
+    <img id="preview" alt="Current draft image preview" hidden>
   </div>
   <div class="row">
     <button id="camBtn">Open camera</button>
     <button id="snapBtn" disabled>Take photo</button>
-    <label class="btn">Import file <input id="fileIn" type="file" accept="image/*" hidden></label>
+    <label class="file-control">Import or replace image <input id="fileIn" type="file" accept="image/png,image/jpeg,image/webp"></label>
   </div>
   <p class="err" id="capErr" role="alert"></p>
   <button id="toMeta" class="primary" disabled>Next: metadata</button>
+  <button id="reviewCapture">Review saved records</button>
+  <button id="discardDraft" class="danger">Discard this draft</button>
 </section>
-
 <section id="meta" class="step" hidden>
-  <h2>Describe this record</h2>
+  <h2 id="metaTitle">Describe this record</h2>
+  <p id="editDescription" class="hint" hidden>Editing metadata preserves the original record ID and image. Changes are recorded in the export history.</p>
   <form id="metaForm" novalidate></form>
   <p class="err" id="saveErr" role="alert"></p>
   <div class="row">
     <button id="backCap">Back</button>
     <button id="saveBtn" class="primary">Save record</button>
+    <button id="cancelEdit" hidden>Cancel edit and discard draft changes</button>
   </div>
 </section>
-
 <section id="review" class="step" hidden>
-  <h2>Review session <span id="sid"></span></h2>
+  <h2>Review session</h2>
+  <p id="sid" class="hint wrap"></p>
   <p id="summary"></p>
-  <table id="recTable"><thead><tr><th></th><th>ID</th><th>Scenario</th><th>Subject</th><th>Location</th><th>Condition</th><th></th></tr></thead><tbody></tbody></table>
+  <p id="draftSummary"></p>
+  <div class="table-scroll" tabindex="0" aria-label="Saved records; scroll horizontally if needed">
+    <table id="recTable"><thead><tr><th>Image</th><th>Record</th><th>Metadata and details</th><th>Actions</th></tr></thead><tbody></tbody></table>
+  </div>
   <div class="row">
     <button id="addMore">Add another record</button>
-    <button id="exportBtn" class="primary">Export ZIP (images + CSV + manifest)</button>
+    <button id="exportBtn" class="primary">Export ZIP (records and any unfinished draft)</button>
   </div>
+  <p class="hint">An unfinished draft is exported separately as draft.json and draft-images/. It is not counted as a saved record. Keep the ZIP and inspect its contents; exports are not automatically imported back into this prototype.</p>
 </section>
 </main>
-<div id="toast" role="status" aria-live="polite"></div>
+<div id="toast" role="status" aria-live="polite" hidden></div>
 <script type="module" src="app.js"></script>
 </body>
 </html>

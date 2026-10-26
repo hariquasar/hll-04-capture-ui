@@ -1,6 +1,7 @@
 // Pure logic: schema, validation, records, export. No DOM — unit-tested in Node.
 
 export const SCHEMA = [
+  { key: "task_id", label: "Evaluation task ID", type: "text", required: false, hint: "Optional outside evaluation; copy the exact task card ID" },
   { key: "scenario", label: "Scenario / task label", type: "select", required: true,
     options: ["indoor", "outdoor", "vehicle", "equipment", "document", "other"] },
   { key: "location", label: "Location (site / area)", type: "text", required: true, minLength: 2 },
@@ -11,6 +12,9 @@ export const SCHEMA = [
 ];
 
 export function validateField(field, value) {
+  if (field.key === "task_id" && value != null && value !== "" &&
+      (typeof value !== "string" || !/^[A-Za-z0-9_-]+$/.test(value)))
+    return "Evaluation task ID: use exact letters, digits, underscore or dash (no spaces)";
   const v = typeof value === "string" ? value.trim() : value;
   if (v === undefined || v === null || v === "") return field.required ? `${field.label} is required` : null;
   if (field.type === "select" && !field.options.includes(v)) return `${field.label}: choose a listed option`;
@@ -39,14 +43,18 @@ export function completeness(rec, schema = SCHEMA) {
 export function newSession(operator, device, now = new Date()) {
   if (!operator || !operator.trim()) throw new Error("operator required");
   const stamp = now.toISOString().replace(/[-:]/g, "").slice(0, 15);
-  return { session_id: `S-${stamp}`, operator: operator.trim(), device, started: now.toISOString(), records: [], events: [] };
+  return { session_id: `S-${stamp}-${crypto.randomUUID()}`, operator: operator.trim(), device, started: now.toISOString(), records: [], events: [] };
 }
 
 export function makeRecord(session, image, meta, now = new Date()) {
-  const n = session.records.length + 1;
+  // Include historical event IDs when migrating an older persisted session.
+  const used = [...session.records, ...session.events].map(r => Number(r.record_id?.split("-").at(-1)) || 0);
+  const n = Math.max(session.next_record_number || 1, ...used.map(x => x + 1));
+  session.next_record_number = n + 1;
   return {
     record_id: `${session.session_id}-${String(n).padStart(3, "0")}`,
     timestamp: now.toISOString(),
+    task_id: meta.task_id || null,
     session_id: session.session_id, operator: session.operator, device: session.device,
     image, meta: { ...meta },
   };
@@ -54,12 +62,36 @@ export function makeRecord(session, image, meta, now = new Date()) {
 
 // Refuse-to-save gate: returns {saved, errors}
 export function trySave(session, rec, now = new Date()) {
-  const v = validateRecord(rec);
+  const v = validateForSession(session, rec);
+  if (rec.image && session.records.some(r => r.image.sha256 === rec.image.sha256))
+    v.errors.image = "Duplicate image already in this session";
+  v.ok = Object.keys(v.errors).length === 0;
   logEvent(session, v.ok ? "save_ok" : "save_blocked", { record_id: rec.record_id, errors: Object.keys(v.errors) }, now);
   if (!v.ok) return { saved: false, errors: v.errors };
-  if (session.records.some(r => r.image.sha256 === rec.image.sha256))
-    return { saved: false, errors: { image: "Duplicate image already in this session" } };
   session.records.push(rec);
+  return { saved: true, errors: {} };
+}
+
+export function validateForSession(session, rec, excludingRecordId = null) {
+  const v = validateRecord(rec);
+  const task = rec.meta?.task_id || "";
+  if (session.study?.enabled && !session.study.task_ids.includes(task))
+    v.errors.task_id = "Study mode: choose the exact assigned task ID (1–6)";
+  if (task && session.records.some(r => r.record_id !== excludingRecordId && r.meta?.task_id === task))
+    v.errors.task_id = "This task ID already belongs to another record; edit that record or use a different task ID";
+  v.ok = Object.keys(v.errors).length === 0;
+  return v;
+}
+
+export function updateRecord(session, recordId, meta, now = new Date()) {
+  const record = session.records.find(r => r.record_id === recordId);
+  if (!record) return { saved: false, errors: { record: "The record no longer exists" } };
+  const candidate = { ...record, meta: { ...meta }, task_id: meta.task_id || null };
+  const v = validateForSession(session, candidate, recordId);
+  if (!v.ok) { logEvent(session, "edit_blocked", { record_id: recordId, errors: Object.keys(v.errors) }, now); return { saved: false, errors: v.errors }; }
+  const before = { ...record.meta };
+  record.meta = candidate.meta; record.task_id = candidate.task_id; record.updated = now.toISOString();
+  logEvent(session, "edit_ok", { record_id: recordId, before, after: { ...record.meta } }, now);
   return { saved: true, errors: {} };
 }
 
@@ -68,7 +100,12 @@ export function logEvent(session, type, data = {}, now = new Date()) {
 }
 
 const CSV_COLS = ["record_id", "timestamp", "session_id", "operator", "device", "file", "sha256", "source"];
-const esc = s => { s = s == null ? "" : String(s); return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
+export const CSV_TEXT_POLICY = "prefix-apostrophe-v1";
+export const spreadsheetSafeValue = value => {
+  const text = value == null ? "" : String(value);
+  return /^[\t\r\n']|^\s*[=+\-@]/.test(text) ? "'" + text : text;
+};
+const esc = value => { const s = spreadsheetSafeValue(value); return /[",\r\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
 
 export function toCSV(session, schema = SCHEMA) {
   const cols = [...CSV_COLS, ...schema.map(f => f.key)];
@@ -80,9 +117,10 @@ export function toCSV(session, schema = SCHEMA) {
 export function toManifest(session, schema = SCHEMA) {
   return {
     format: "hll04-collection/1",
+    csv_text_policy: CSV_TEXT_POLICY,
     session_id: session.session_id, operator: session.operator, device: session.device, started: session.started,
     exported: new Date().toISOString(),
-    schema, records: session.records.map(r => ({ ...r, image: { ...r.image, dataUrl: undefined } })),
+    schema, study: session.study || { enabled: false }, records: session.records.map(r => ({ ...r, image: { ...r.image, dataUrl: undefined } })),
     events: session.events,
   };
 }
@@ -116,15 +154,41 @@ export function zip(files) { // files: [{name, data: Uint8Array}]
 
 // Evaluation scoring vs ground-truth task sheet (works for both conditions)
 export function scoreAgainstTruth(records, truth, schema = SCHEMA) {
+  const id = value => {
+    if (!((typeof value === "string" && /^[A-Za-z0-9_-]+$/.test(value)) ||
+      (typeof value === "number" && Number.isSafeInteger(value) && value >= 0)))
+      throw new Error("Missing or ambiguous task ID; explicit IDs required (no order inference)");
+    return String(value);
+  };
+  const known = new Set();
   const req = schema.filter(f => f.required);
+  if (!Array.isArray(truth) || !truth.length) throw new Error("No truth task IDs");
+  for (const t of truth) {
+    const key = id(t?.task_id);
+    if (known.has(key)) throw new Error("Duplicate truth task ID");
+    known.add(key);
+    for (const f of req) {
+      const value = t[f.key];
+      const error = typeof value !== "string" ? "required truth value must be text" : validateField(f, value);
+      if (error) throw new Error(`Invalid truth task ${key}, field ${f.key}: ${error}`);
+    }
+  }
+  const seen = new Set();
+  for (const r of records) {
+    const key = id(r.task_id);
+    if (r.meta?.task_id != null && r.meta.task_id !== "" && id(r.meta.task_id) !== key)
+      throw new Error("Conflicting task ID in record and metadata");
+    if (!known.has(key) || seen.has(key)) throw new Error("Unknown or duplicate task ID: " + key);
+    seen.add(key);
+  }
   let cells = 0, filled = 0, correct = 0;
   for (const t of truth) {
-    const r = records.find(x => x.task_id === t.task_id) || { meta: {} };
+    const r = records.find(x => String(x.task_id) === String(t.task_id)) || { meta: {} };
     for (const f of req) {
       cells++;
       const v = (r.meta[f.key] ?? "").toString().trim();
       if (v) filled++;
-      if (v.toLowerCase() === String(t[f.key]).toLowerCase()) correct++;
+      if (v.toLowerCase() === t[f.key].trim().toLowerCase()) correct++;
     }
   }
   return { completeness: filled / cells, accuracy: correct / cells, cells };

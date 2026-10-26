@@ -1,0 +1,24 @@
+{
+  "version": "HLL04-desktop-transcription-v2",
+  "status": "prepared synthetic instruments; no human observations",
+  "task_ids": ["1", "2", "3", "4", "5", "6"],
+  "data_type": "six fixed synthetic PNG illustrations, same bytes in both conditions",
+  "device": "same desktop/laptop, local import or copy; no camera",
+  "required_metadata": ["scenario", "location", "subject_id", "condition"],
+  "metadata_cells_per_condition": 24,
+  "score_normalization": "trim outer whitespace; case-insensitive metadata; no other synonyms",
+  "task_identity": "exact strings; no whitespace, leading zeros, duplicates, unknown values or order inference",
+  "timing_unit": "seconds for the entire six-task block including correction and recovery",
+  "block_cap_seconds": 900,
+  "paired_unit": "participant",
+  "difference_direction": "guided minus baseline",
+  "condition_order": "odd participant codes baseline then guided; even codes guided then baseline",
+  "practice": "separate unscored practice.png item in a separate session before each measured condition",
+  "schema_rules": {
+    "scenario": ["indoor", "outdoor", "vehicle", "equipment", "document", "other"],
+    "location": "at least two characters",
+    "subject_id": "2-4 capital letters, dash, 3-6 digits",
+    "condition": ["good", "fair", "poor", "unknown"],
+    "notes": "optional, at most 500 characters"
+  }
+}

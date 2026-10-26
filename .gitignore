@@ -1,2 +1,18 @@
 node_modules/
 eval/results/
+
+# Generated evidence and private study data stay outside version control.
+.test-artifacts/
+__pycache__/
+*.pyc
+.DS_Store
+*.private.json
+*-private.json
+remote-study/frontend/evidence/
+remote-study/frontend/evidence-*/
+remote-study/backend/*-deploy/
+remote-study/backend/private-*/
+docs/report-evidence/
+docs/repair-evidence/
+docs/repair-20261021/
+docs/evaluation-engineering/

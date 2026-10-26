@@ -1,0 +1,4 @@
+__pycache__/
+*.pyc
+# Private configuration and exports belong outside the repository.
+*.private.json
