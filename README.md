@@ -4,6 +4,23 @@ EE4080 FYP, SHUM Ho Yin, CityU. Official title: **UI design for data collection*
 
 A local browser prototype: session → import → metadata → inspect/edit → export. The implementation scope is a proposed industrial image-and-metadata workflow. Partner requirements and human evaluation remain unconfirmed. Synthetic fixtures and automated tests are labelled separately from participant observations.
 
+## Remote study on AWS (v3)
+
+The separate [remote study](https://main.d3g93doyp3ywja.amplifyapp.com/) compares the guided interface with a plain browser table. It requires a private invitation and desktop Chrome. Each condition has a two-minute practice and a fifteen-minute measured cap. This is `HLL04-remote-table-v3`; its protocol and results must remain separate from the frozen desktop v2 spreadsheet/folder comparison below.
+
+Amplify serves `remote-study/web/`. Lambda accepts authenticated metadata checkpoints and final submissions into private S3/DynamoDB storage. Images stay in the browser: only prepared-image filenames and hashes are submitted. A server receipt confirms acceptance; an export event alone does not prove a file downloaded or was opened. Research invitations, bearer receipts and participant exports are excluded from this public repository.
+
+Read [the remote protocol](remote-study/PROTOCOL.md), [frontend setup and recovery](remote-study/frontend/README.md), and [backend deployment instructions](remote-study/backend/README.md). For an isolated synthetic local run:
+
+```sh
+npm ci
+python3 remote-study/frontend/local-server.py
+```
+
+Open `http://127.0.0.1:18771/#invite=local-synthetic&synthetic=1`. In another terminal, run `node --test remote-study/frontend/core.test.mjs` and `node remote-study/frontend/browser.test.mjs`. The local server rejects human sessions. Its state is in memory and resets when it stops.
+
+The [26 October agent test](docs/aws-agent-test-2026-10-26/FYP-AWS-test-report-2026-10-26.md) verified both six-record Chrome flows, real ZIP downloads and independent AWS acceptance for synthetic S005. Both questionnaires were skipped. These are engineering observations, with no human usability results, SUS scores or interface-speed conclusion.
+
 ## Hosted prototype
 
 Open [the AWS Amplify HTTPS prototype](https://main.d2wgs3nlrx1uri.amplifyapp.com) in desktop Chrome. It serves the five unchanged source files from study version `HLL04-desktop-transcription-v2`, freeze revision 2. Hosting does not add a collection backend: images and metadata remain in browser-local IndexedDB, and exports download to your computer. This hostname has separate storage from localhost; opening it does not migrate old sessions.

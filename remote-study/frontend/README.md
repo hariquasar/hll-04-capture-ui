@@ -28,9 +28,15 @@ SUS uses the original ten statements, with whole-interface framing after each co
 
 Local state stores a private bearer credential plus pending idempotent request. Uploads contain only the agreed payload, never credential, invitation, image bytes or original operator identity. Exact pending request UUID/body/sequence is retried serially. Lost acknowledgements cannot allocate a replacement session or duplicate a checkpoint. Checkpoint count is throttled, with room left for final submission. A completion receipt appears only after server acknowledgement.
 
+The selected reference card and table image-target row are retained separately for each condition's practice and measured workspace. They stay local and do not fill or correct metadata. Image status is read from the restored row or actual guided draft, including its entered task ID. The guided layout retains its existing scrolling areas; changing their structure needs an instrument-fidelity review.
+
 “Save response backup” exports response metadata and participant code without credential or invitation. “Save private receipt” exports the credential needed for anonymous resume/withdrawal; it must be kept private. The receipt is not a backup of unsent responses. Restoring a receipt can restore acknowledged metadata; guided images and original instrument state still require the original browser's namespaced IndexedDB. If guided state is absent, the client refuses to silently create a new timed attempt and offers incomplete finish/withdrawal.
 
+A successful receipt lookup restores the acknowledged session. A connection, credential or protocol error keeps the restore screen available instead of exposing an empty timed attempt. When the service confirms that collection access has expired, the receipt opens the expired-access screen with withdrawal still available during retention; it cannot start a fresh block. Normal reload retries the exact pending request before checking the remote sequence: newer local edits survive an older acknowledged snapshot, and a newer server checkpoint replaces stale cached table rows.
+
 Collection access expires after four hours. Withdrawal uses the same credential during the longer retention period. HTTP 202 withdrawal immediately marks the session excluded locally, blocks further task interaction, retains the exact withdrawal request and says deletion is pending. Deletion is not claimed complete until a response acknowledges `cleanup_pending:false`.
+
+After that acknowledgement, direct withdrawal, retry and reload clear the wrapper's response copy and UI flags plus only this session's practice/measured guided IndexedDB databases and matching legacy keys. The private credential and receipt remain. If local image deletion is blocked, the receipt displays that separate cleanup warning and Retry upload retries it. Downloaded ZIPs, response backups and private receipt files remain on the device; a website cannot remove those files. Other sessions and the original prototype's storage are not cleared.
 
 ## Local verification (synthetic only)
 
@@ -45,11 +51,16 @@ The second command starts an isolated loopback server on port 18771 using the re
 
 ```sh
 node remote-study/frontend/browser.test.mjs
+node remote-study/frontend/recovery.test.mjs
+node remote-study/frontend/slow-network.test.mjs
+node remote-study/frontend/hosted-six-record.test.mjs
 ```
 
-Requires the repository's `playwright-core` and installed Google Chrome. Browser tests use isolated contexts, actual original guided UI, actual ZIP downloads and external Playwright virtual time (no production timer bypass). They create two paired partial sessions in opposite assigned orders, plus a cap/reload/tab-lock/withdrawal session. Artifacts default to `frontend/evidence/`.
+Requires the repository's `playwright-core` and installed Google Chrome. Browser tests use isolated contexts, actual original guided UI, actual ZIP downloads and external Playwright virtual time (no production timer bypass). The browser suite creates two paired partial sessions in opposite assigned orders, plus a cap/reload/tab-lock/withdrawal session. Recovery checks cover both workspace contexts, lost acknowledgements, remote checkpoint adoption, receipt lookup success/failure and acknowledged local withdrawal cleanup, including blocked IndexedDB deletion. Slow-network checks hold a checkpoint acknowledgement while submit/withdraw actions run, asserting one checkpoint followed by the terminal request without a stale-snapshot backlog. The six-record suite completes both conditions; its numeric SUS values are synthetic fixtures, not human ratings. Artifacts default to `frontend/evidence/`.
 
 For an authorized synthetic hosted run, set `HLL04_STUDY_TEST_URL`, `HLL04_STUDY_INVITE_FILE` (plain text or JSON with `synthetic_invite`), and `HLL04_STUDY_TEST_DIR`. The suite rejects the local default invitation for a remote host. Never put a human invitation into a synthetic test. The script does not print invitations or tokens.
+
+Run suites sequentially. The loopback server uses the real backend's creation throttle (20 requests per hour per source address); restart that isolated in-memory server between repeated regression batches. Hosted throttles must be respected rather than bypassed.
 
 ## Verification boundaries
 

@@ -1,12 +1,14 @@
-// Synthetic-only real-host integration. Never creates a human P-code.
+// Synthetic-only six-record integration. Numeric SUS inputs below are fixture values, not human ratings.
 import {chromium} from 'playwright-core';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import {TASKS,FIELDS} from '../web/core.mjs';
-const root='/Users/hoyinshum/Documents/Codex/2026-10-21/fk-ok/work/remote-study-20261021';
-const invite=JSON.parse(await fs.readFile(root+'/synthetic-invite.private.json','utf8')).synthetic_invite;
-const out=root+'/hosted-six-record';await fs.mkdir(out,{recursive:true});
+const base=process.env.HLL04_STUDY_TEST_URL||'http://127.0.0.1:18771';
+let invite=process.env.HLL04_STUDY_INVITE||'local-synthetic';
+if(process.env.HLL04_STUDY_INVITE_FILE){const raw=(await fs.readFile(process.env.HLL04_STUDY_INVITE_FILE,'utf8')).trim();try{const p=JSON.parse(raw);invite=p.synthetic_invite||p.syntheticInvite||p.invite_code;if(!invite)throw Error('Synthetic invitation missing');}catch(e){if(raw.startsWith('{'))throw e;invite=raw;}}
+if(!base.startsWith('http://127.0.0.1')&&invite==='local-synthetic')throw Error('Remote run requires a synthetic invitation');
+const out=path.resolve(process.env.HLL04_STUDY_TEST_DIR||'remote-study/frontend/evidence/hosted-six-record');await fs.mkdir(out,{recursive:true});
 const checks=[];const check=(name,value)=>{assert(value,name);checks.push(name);};
 const browser=await chromium.launch({channel:'chrome',headless:true});
 try{
@@ -14,10 +16,10 @@ try{
  const page=await context.newPage();page.on('dialog',d=>d.accept());const errors=[];page.on('pageerror',e=>errors.push(e.message));
  let submission;page.on('request',r=>{if(r.url().endsWith('/submit'))submission=r.postDataJSON();});
  await page.clock.install();
- await page.goto('https://main.d3g93doyp3ywja.amplifyapp.com/#invite='+encodeURIComponent(invite)+'&synthetic=1');
- for(const id of ['adultConsent','agreeConsent','firstParticipation'])await page.locator('#'+id).check();
+ await page.goto(base.replace(/\/$/,'')+'/#invite='+encodeURIComponent(invite)+'&synthetic=1');
+ try{for(const id of ['adultConsent','agreeConsent','firstParticipation'])await page.locator('#'+id).check();}catch{throw Error('Synthetic consent screen unavailable. Main: '+await page.locator('#main').innerText()+'; browser errors: '+errors.join('; '));}
  await page.locator('#beginStudy').click();await page.locator('#startPractice').waitFor();
- const identity=await page.evaluate(()=>({code:window.__hll04study.state.session.participant_code,order:window.__hll04study.state.session.order}));
+ const identity=await page.evaluate(()=>({session_id:window.__hll04study.state.session.session_id,code:window.__hll04study.state.session.participant_code,order:window.__hll04study.state.session.order}));
  check('server synthetic allocation never P-code',identity.code.startsWith('S'));
  for(const condition of identity.order){
   await page.locator('#startPractice').click();
