@@ -1,0 +1,65 @@
+{
+  "evidence_schema_version": "hll04.sanitized.aws-submission-verification.v1",
+  "protocol_version": "HLL04-remote-table-v3",
+  "synthetic_session": "S005",
+  "classification": "synthetic_engineering_verification",
+  "verification_outcome": "passed",
+  "accepted_document_outcome": "submission",
+  "session_outcome": "submitted",
+  "payload_outcome": "complete",
+  "accepted_sequence_count": 43,
+  "checks": {
+    "synthetic_marker_confirmed": true,
+    "metadata_submitted": true,
+    "accepted_document_is_submission": true,
+    "payload_phase_complete": true,
+    "final_receipt_matches_ui": true,
+    "metadata_and_document_sequence_match": true,
+    "metadata_unchanged_during_read": true,
+    "protocol_version_consistent": true,
+    "no_image_bytes_in_payload": true,
+    "no_credentials_in_payload": true
+  },
+  "conditions": {
+    "baseline": {
+      "outcome": "completed",
+      "record_count": 6,
+      "exact_six_task_ids": true,
+      "all_metadata_matches_source": true,
+      "all_image_filenames_and_hashes_match_source": true,
+      "draft_absent": true,
+      "practice_outcome": "completed",
+      "export_generated": true,
+      "download_requested": true,
+      "opened_confirmed": true,
+      "questionnaire_outcome": "skipped",
+      "questionnaire_score_count": 0,
+      "questionnaire_scores_absent": true,
+      "agent_run_comment_marker_present": true
+    },
+    "guided": {
+      "outcome": "completed",
+      "record_count": 6,
+      "exact_six_task_ids": true,
+      "all_metadata_matches_source": true,
+      "all_image_filenames_and_hashes_match_source": true,
+      "draft_absent": true,
+      "practice_outcome": "completed",
+      "export_generated": true,
+      "download_requested": true,
+      "opened_confirmed": true,
+      "questionnaire_outcome": "skipped",
+      "questionnaire_score_count": 0,
+      "questionnaire_scores_absent": true,
+      "agent_run_comment_marker_present": true
+    }
+  },
+  "known_limitations": {
+    "previous_synthetic_attempt_outcome": "active",
+    "previous_attempt_synthetic_marker_confirmed": true,
+    "previous_synthetic_attempt_not_submitted": true,
+    "previous_synthetic_attempt_deleted": false,
+    "human_usability_results_established": false,
+    "browser_opening_independently_proven_by_aws": false
+  }
+}

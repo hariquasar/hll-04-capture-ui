@@ -1,0 +1,23 @@
+{
+  "synthetic_only": true,
+  "scenario_filter": "private receipt restores acknowledged metadata in another browser",
+  "session_create_requests": 1,
+  "executed_scenarios": 1,
+  "passed": 1,
+  "scenarios": [
+    {
+      "name": "private receipt restores acknowledged metadata in another browser",
+      "passed": true,
+      "evidence": {
+        "checkpoint_ack_sequence": 3,
+        "remote": {
+          "sequence": 3,
+          "phase": "task",
+          "location": "Acknowledged receipt restore"
+        },
+        "restored_phase": "task",
+        "restored_location": "Acknowledged receipt restore"
+      }
+    }
+  ]
+}

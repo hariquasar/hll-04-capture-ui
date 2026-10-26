@@ -1,0 +1,31 @@
+{
+  "synthetic_only": true,
+  "identity": {
+    "code": "S006",
+    "order": [
+      "guided",
+      "baseline"
+    ]
+  },
+  "passed": 18,
+  "checks": [
+    "server synthetic allocation never P-code",
+    "guided six raw records retained",
+    "guided explicit image selection hashes match all cards",
+    "guided exact raw metadata retained",
+    "guided original study code never participant name",
+    "baseline six raw records retained",
+    "baseline explicit image selection hashes match all cards",
+    "baseline exact raw metadata retained",
+    "baseline original study code never participant name",
+    "final API receipt acknowledged",
+    "no image bytes or credentials in submitted response",
+    "baseline six records reached final submission",
+    "baseline all ten SUS responses retained",
+    "baseline complete timer and artifact recorded",
+    "guided six records reached final submission",
+    "guided all ten SUS responses retained",
+    "guided complete timer and artifact recorded",
+    "no uncaught browser runtime errors"
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "synthetic_only": true,
+  "passed": 9,
+  "scenarios": [
+    {
+      "name": "baseline refresh retains independent reference, row/draft image and timer",
+      "passed": true
+    },
+    {
+      "name": "guided refresh retains independent reference, row/draft image and timer",
+      "passed": true
+    },
+    {
+      "name": "lost checkpoint acknowledgement cannot replace newer local edits",
+      "passed": true
+    },
+    {
+      "name": "newer acknowledged checkpoint replaces stale cached table rows",
+      "passed": true
+    },
+    {
+      "name": "failed private receipt restore does not expose a fresh timed attempt",
+      "passed": true
+    },
+    {
+      "name": "private receipt restores acknowledged metadata in another browser",
+      "passed": false,
+      "error": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-row=\"0\"][data-field=\"location\"]') to be visible\u001b[22m\n"
+    },
+    {
+      "name": "expired private receipt keeps withdrawal accessible without a fresh attempt",
+      "passed": true
+    },
+    {
+      "name": "blocked local guided image deletion remains visible and can be retried",
+      "passed": true
+    },
+    {
+      "name": "withdrawal retry clears local response copy only after deletion acknowledgement",
+      "passed": true
+    },
+    {
+      "name": "withdrawal reload clears local response copy only after deletion acknowledgement",
+      "passed": true
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "verified_at_hkt": "2026-10-26",
+  "app_id": "d3g93doyp3ywja",
+  "job_id": "5",
+  "deployment_status": "SUCCEED",
+  "source_commit": "7eb8312a76e574b982abb91afa496909584f3c34",
+  "origin": "https://main.d3g93doyp3ywja.amplifyapp.com",
+  "files_verified": 21,
+  "all_served_file_hashes_match_release": true,
+  "study_mjs_sha256": "e2b590f6d971e4f18d05c79bafd012cce71c1797be33ad925ef6b77f86e24f9e",
+  "backend_template_matches_existing_plan": true,
+  "backend_stack_status": "UPDATE_COMPLETE",
+  "backend_modified": false,
+  "frozen_desktop_v2_modified": false
+}

@@ -1,0 +1,47 @@
+{
+  "synthetic_only": true,
+  "creates": 1,
+  "base": "https://main.d3g93doyp3ywja.amplifyapp.com",
+  "steps": [
+    {
+      "step": "original no-pending predicate after older ACK",
+      "held_phase": "instructions",
+      "held_location": null,
+      "local_phase": "task",
+      "remote": {
+        "sequence": 2,
+        "status": "active",
+        "phase": "instructions",
+        "condition_index": 0,
+        "baseline_location": null
+      }
+    },
+    {
+      "step": "fresh browser after older acknowledged snapshot",
+      "table_present": 0,
+      "start_block_present": 1,
+      "phase": "instructions"
+    },
+    {
+      "step": "payload-aware acknowledgment predicate",
+      "remote": {
+        "sequence": 3,
+        "status": "active",
+        "phase": "task",
+        "condition_index": 0,
+        "baseline_location": "Acknowledged receipt restore"
+      }
+    },
+    {
+      "step": "fresh browser after latest acknowledged snapshot",
+      "table_location": "Acknowledged receipt restore",
+      "phase": "task",
+      "passed": true
+    }
+  ],
+  "cleanup": {
+    "status": "withdrawn",
+    "cleanup_pending": false
+  },
+  "result": "HARNESS_PREDICATE_RACE_CONFIRMED_PRODUCT_RESTORE_PASS"
+}

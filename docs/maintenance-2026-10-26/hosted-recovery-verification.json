@@ -1,0 +1,26 @@
+{
+  "classification": "synthetic_engineering_verification",
+  "initial_full_suite": {
+    "passed": 9,
+    "executed": 10,
+    "artifact": "hosted-recovery-initial-results.json",
+    "timed_out_scenario": "private receipt restores acknowledged metadata in another browser"
+  },
+  "diagnostic": {
+    "result": "product restoration passed; original test readiness predicate raced an older acknowledgement",
+    "artifact": "hosted-receipt-diagnostic.json",
+    "session_withdrawn": true
+  },
+  "corrected_focused_rerun": {
+    "passed": 1,
+    "executed": 1,
+    "session_create_requests": 1,
+    "artifact": "hosted-receipt-corrected-results.json"
+  },
+  "all_ten_targeted_recovery_behaviours_verified_across_runs": true,
+  "full_ten_scenario_rerun_after_harness_correction": false,
+  "production_code_changed_after_deployment": false,
+  "production_study_mjs_sha256": "e2b590f6d971e4f18d05c79bafd012cce71c1797be33ad925ef6b77f86e24f9e",
+  "fault_injection_boundary": "Some browser-route failures, expired-access401 and cleanup_pending responses were injected. This is not actual four-hour/90-day elapsed testing or live lease-delayed deletion. Real session/checkpoint/submit/withdraw paths and browser storage were also exercised.",
+  "human_usability_evidence": false
+}

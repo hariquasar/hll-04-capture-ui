@@ -1,0 +1,86 @@
+{
+  "date": "2026-10-26",
+  "status": "PASS",
+  "document_status": "working draft",
+  "pages": 46,
+  "body_words_whitespace": 11742,
+  "word_count_rule": "Chapters 1\u20136 prose only; excludes headings, tables, identity, draft notice, AI disclosure, references, header/footer",
+  "native_tables": 6,
+  "embedded_figures": 2,
+  "bibliography_entries": 7,
+  "visual_review": {
+    "pages_inspected": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46
+    ],
+    "result": "PASS"
+  },
+  "structural_checks": {
+    "docx_zip_crc": "PASS",
+    "docx_xml_and_relationships": "PASS",
+    "pdf_characters_within_page_bounds": "PASS",
+    "local_markdown_resource_links": "PASS",
+    "historical_evaluation_sections_4_1_to_4_14_preserved_except_figure_paths": true,
+    "all_original_tables_and_bibliography_preserved": true,
+    "standalone_build_without_private_helper_or_full_text_archives": "PASS"
+  },
+  "files": {
+    "report-chapters-draft.md": {
+      "sha256": "c3c6fbf3c344eef80052902feca7254ea1dbc000c90e69a3d55d659d13c07004",
+      "bytes": 95339
+    },
+    "report-chapters-draft.docx": {
+      "sha256": "b6a45257ea7d8ea3a32fcf04225d843a0fb925c5cd55a947cc63ee1d9472e2ac",
+      "bytes": 175889
+    },
+    "report-chapters-draft.pdf": {
+      "sha256": "f3f4c101401d3aa9da32a358f36fd814eb466182458a3403b197386cc1efbe7a",
+      "bytes": 422592
+    }
+  },
+  "output_copies_sha256_match": true
+}

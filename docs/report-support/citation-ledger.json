@@ -1,0 +1,89 @@
+{
+  "version": 1,
+  "sources": [
+    {
+      "id": 1,
+      "url": "https://homes.cs.washington.edu/~anderson/papers/ICTD/ICTD2010.pdf",
+      "title": "C. Hartung, Y. Anokwa, W. Brunette, A. Lerer, C. Tseng and G. Borriello, Open Data Kit: Tools to Build Information Services for Developing Regions, ICTD, 2010",
+      "accessed": "2026-10-16",
+      "quotes": [
+        {
+          "text": "Collect is a mobile platform that renders application logic",
+          "added": "2026-10-16"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "url": "https://docs.getodk.org/form-logic",
+      "title": "ODK, Form Logic, official documentation (accessed 16 October 2026)",
+      "accessed": "2026-10-16",
+      "quotes": [
+        {
+          "text": "To make a question required,",
+          "added": "2026-10-16"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "url": "https://api.intechopen.com/chapter/pdf-download/10814.pdf",
+      "title": "J. A. Bargas-Avila, O. Brenzikofer, S. P. Roth, A. N. Tuch, S. Orsini and K. Opwis, Simple but Crucial User Interfaces in the World Wide Web: Introducing 20 Guidelines for Usable Web Form Design, in User Interfaces, 2010, doi:10.5772/9500",
+      "accessed": "2026-10-16",
+      "quotes": [
+        {
+          "text": "Guideline 16: Always show error messages after the form has been filled and sent.",
+          "added": "2026-10-16"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "url": "https://digital.ahrq.gov/sites/default/files/docs/survey/systemusabilityscale%2528sus%2529_comp%255B1%255D.pdf",
+      "title": "J. Brooke, SUS: A quick and dirty usability scale, chapter reproduction hosted by AHRQ",
+      "accessed": "2026-10-16",
+      "quotes": [
+        {
+          "text": "SUS scores have a range of 0 to 100.",
+          "added": "2026-10-16"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "url": "https://docs.aws.amazon.com/amplify/latest/userguide/welcome.html",
+      "title": "Amazon Web Services, Welcome to AWS Amplify Hosting, AWS Amplify Hosting User Guide (accessed 21 October 2026)",
+      "accessed": "2026-10-21",
+      "quotes": [
+        {
+          "text": "Amplify deploys your app to the AWS global content delivery network (CDN).",
+          "added": "2026-10-21"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "url": "https://docs.aws.amazon.com/amplify/latest/userguide/manual-deploys.html",
+      "title": "Amazon Web Services, Manual deploys, AWS Amplify Hosting User Guide (accessed 21 October 2026)",
+      "accessed": "2026-10-21",
+      "quotes": [
+        {
+          "text": "Manual deployments enable you to publish your web app with Amplify Hosting without connecting a Git provider.",
+          "added": "2026-10-21"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia",
+      "title": "MDN Web Docs, MediaDevices getUserMedia method (accessed 21 October 2026)",
+      "accessed": "2026-10-21",
+      "quotes": [
+        {
+          "text": "in insecure contexts, `navigator.mediaDevices` is `undefined`, preventing access to `getUserMedia()`.",
+          "added": "2026-10-21"
+        }
+      ]
+    }
+  ]
+}

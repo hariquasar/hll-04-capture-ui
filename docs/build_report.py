@@ -1,23 +1,32 @@
 from pathlib import Path
-import subprocess,re,json,sys
+import re,json
 from docx import Document
 from docx.shared import Inches,Pt,Mm,RGBColor
 from docx.enum.table import WD_TABLE_ALIGNMENT,WD_CELL_VERTICAL_ALIGNMENT
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
-ROOT=Path(__file__).parent; E=ROOT/'report-evidence'; S='/Users/hoyinshum/.hermes/skills/research/grounded-citations/scripts/sources.py'
-base=[sys.executable,S,'--ledger',str(E/'citation-ledger.json')]
-quotes=[(1,'odk-paper','Collect is a mobile platform that renders application logic'),(2,'odk-logic','To make a question required,'),(3,'guidelines-full','Guideline 16: Always show error messages after the form has been filled and sent.'),(4,'sus','SUS scores have a range of 0 to 100.')]
-for n,f,q in quotes: subprocess.run(base+['quote',str(n),'--text',q,'--from',str(E/(f+'.txt'))],check=True)
+ROOT=Path(__file__).parent; E=ROOT/'report-evidence'; SUPPORT=ROOT/'report-support'
+E.mkdir(exist_ok=True)
 md=ROOT/'report-chapters-draft.md'
-subprocess.run(base+['render','--replace-in',str(md)],check=True)
-r=subprocess.run(base+['verify',str(md),'--strict','--evidence'],capture_output=True,text=True);(E/'citation-verification.txt').write_text(r.stdout+r.stderr);print(r.stdout,r.stderr);r.check_returncode()
+# Keep the public build independent of private citation tools and full-text archives.
+# This gate checks citation identity and URLs, not the truth of every cited claim.
+ledger=json.loads((SUPPORT/'citation-ledger.json').read_text())
+source_text=md.read_text().split('## Sources',1)
+if len(source_text)!=2:raise ValueError('The report must contain one Sources section')
+refs={int(n):url for n,url in re.findall(r'^\[(\d+)\] (https?://\S+) — ',source_text[1],re.M)}
+expected={source['id']:source['url'] for source in ledger['sources']}
+if refs!=expected:raise ValueError('Report references differ from the citation ledger')
+used={int(n) for n in re.findall(r'\[(\d+)\]',source_text[0])}
+if not used.issubset(refs):raise ValueError('Report contains an unresolved citation number')
+(E/'citation-verification.txt').write_text('Reference numbers and URLs match the archived citation ledger.\nThis is a consistency check, not fresh full-text source verification.\n')
 d=Document();sec=d.sections[0];sec.page_width=Mm(210);sec.page_height=Mm(297);sec.top_margin=sec.bottom_margin=Inches(1.5);sec.left_margin=sec.right_margin=Inches(1)
 for name in ['Normal','Title','Heading 1','Heading 2','Heading 3']:
  st=d.styles[name];st.font.name='Times New Roman';st.font.size=Pt(12 if name=='Normal' else 16 if name in ['Title','Heading 1'] else 14)
  st.font.color.rgb=RGBColor(0,0,0)
  st.paragraph_format.space_after=Pt(8);st.paragraph_format.line_spacing=1.5
  if name!='Normal':st.font.bold=True
+ # Remove the template's decorative Title border, which otherwise renders blue.
+ for border in list(st.element.xpath('./w:pPr/w:pBdr')):border.getparent().remove(border)
 # Word's built-in theme font attributes override explicit fonts in some renderers.
 # Apply the university font to paragraph and linked character styles consistently.
 for name in ['Normal','Title','Title Char','Heading 1','Heading 1 Char','Heading 2','Heading 2 Char','Heading 3','Heading 3 Char','Caption','Header','Footer']:
@@ -45,7 +54,7 @@ for para in paragraphs:
   if re.match(r'[1-6] ',title): h.paragraph_format.page_break_before=True
   inbody=bool(re.match(r'[1-6] ',title));continue
  if para.startswith('### '):d.add_heading(para[4:],2);continue
- if re.match(r'^Table [1-6]\. ',para):
+ if re.match(r'^Table \d+\. ',para):
   p=d.add_paragraph(para,style='Caption');p.paragraph_format.keep_with_next=True
   p.paragraph_format.line_spacing=1;p.paragraph_format.space_before=Pt(8);p.paragraph_format.space_after=Pt(6)
   for rr in p.runs:rr.font.name='Times New Roman';rr.font.size=Pt(11);rr.font.color.rgb=RGBColor(0,0,0)
@@ -53,11 +62,11 @@ for para in paragraphs:
  if para.startswith('![Figure '):
   match=re.fullmatch(r'!\[([^\]]+)\]\(([^)]+)\)',para)
   if not match: raise ValueError('Invalid figure: '+para)
-  figure_width=5.5 if match[2]=='repair-20261021/review-details.png' else 6.1
+  figure_width=5.5 if match[2]=='report-support/review-details.png' else 6.1
   d.add_picture(str(ROOT/match[2]),width=Inches(figure_width))
   picture_paragraph=d.paragraphs[-1]
   picture_paragraph.paragraph_format.keep_with_next=True
-  if match[2]=='repair-20261021/review-details.png':
+  if match[2]=='report-support/review-details.png':
    picture_paragraph.alignment=1
    picture_paragraph.paragraph_format.line_spacing=1
   cap=d.add_paragraph(match[1],style='Caption');cap.paragraph_format.keep_with_next=False

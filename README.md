@@ -21,6 +21,8 @@ Open `http://127.0.0.1:18771/#invite=local-synthetic&synthetic=1`. In another te
 
 The [26 October agent test](docs/aws-agent-test-2026-10-26/FYP-AWS-test-report-2026-10-26.md) verified both six-record Chrome flows, real ZIP downloads and independent AWS acceptance for synthetic S005. Both questionnaires were skipped. These are engineering observations, with no human usability results, SUS scores or interface-speed conclusion.
 
+The [26 October maintenance verification](docs/verification-2026-10-26.md) records the repair, reviewed source, deployed release and subsequent synthetic checks.
+
 ## Hosted prototype
 
 Open [the AWS Amplify HTTPS prototype](https://main.d2wgs3nlrx1uri.amplifyapp.com) in desktop Chrome. It serves the five unchanged source files from study version `HLL04-desktop-transcription-v2`, freeze revision 2. Hosting does not add a collection backend: images and metadata remain in browser-local IndexedDB, and exports download to your computer. This hostname has separate storage from localhost; opening it does not migrate old sessions.
@@ -89,5 +91,7 @@ Use the provided naming and image-folder conventions. The scorer counts all assi
 - `tests/`: logic, instrument and Chrome regressions.
 - `eval/`: controlled study materials and scoring; no human results.
 - `docs/report-chapters-draft.md` and generated Word/PDF: working report with dated evidence and limitations.
+- `remote-study/`: separate v3 protocol, guided/table study wrapper, private metadata API, deployment and analysis tools.
+- `docs/presentation/`: editable presentation, PDF and speaker notes updated with the dated remote-study evidence.
 
 The repaired design targets desktop Chrome and a six-record session. Whole-envelope snapshots with data URLs trade simplicity for extra memory and write volume. Larger sessions, physical cameras, phones, other browsers, screen-reader behavior, power-loss guarantees, encryption and industrial deployment have not been validated. Camera capture re-encodes pixels; file imports retain original bytes. Schema changes also require coordinated changes to task truth, the baseline, review and scoring. Do not claim improved human usability from automated checks.

@@ -1,5 +1,7 @@
 # Draft source and evidence ledger
 
+Historical record of the 21 October drafting pass. Its artifact counts, paths and completion statements describe that revision and are not the current report status. See [26 October verification](verification-2026-10-26.md) for the later remote v3 evidence and report build checks.
+
 Updated 21 October 2026 after implementation repair, evidence synchronization and delivery render QA. This is a working report, not a final submission.
 
 ## Current artifact verification

@@ -1,0 +1,26 @@
+{
+  "result": "PASS",
+  "review_scope": "remote-study operational repairs",
+  "source_commit": "7eb8312a76e574b982abb91afa496909584f3c34",
+  "study_mjs_sha256": "e2b590f6d971e4f18d05c79bafd012cce71c1797be33ad925ef6b77f86e24f9e",
+  "independent_checks": {
+    "core_tests": 10,
+    "recovery_scenarios": 10,
+    "slow_network_scenarios": 2,
+    "syntax_check": "passed",
+    "diff_whitespace": "passed",
+    "selection_mutation": "detected"
+  },
+  "reviewed_implementer_evidence": {
+    "browser_checks": 45,
+    "six_record_checks": 18
+  },
+  "parent_preservation_checks": {
+    "desktop_logic_and_evaluation_tests": 47,
+    "backend_tests": 35,
+    "analysis_tests": 21
+  },
+  "targeted_repair": "Expired valid receipt retains withdrawal access after collection expiry; connection/credential failures cannot open a fresh attempt.",
+  "frozen_prototype_backend_and_protocol_unchanged": true,
+  "human_usability_evidence": false
+}

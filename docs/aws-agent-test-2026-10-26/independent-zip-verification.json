@@ -1,0 +1,26 @@
+{
+  "synthetic_artifact_audit": true,
+  "archives_verified": 2,
+  "results": [
+    {
+      "archive": "S-20261026T073238-a1d521f0-7e6f-4fda-9d61-2dc8ac503be2.zip",
+      "sha256": "288f25f654e14fad659b4773b8c232791c11eda34c0e9746c0a12923ef91a398",
+      "saved_records": 6,
+      "saved_image_occurrences": 6,
+      "crc": "pass",
+      "unique_safe_paths": "pass",
+      "exact_image_hashes": "pass",
+      "csv_manifest_roundtrip": "pass"
+    },
+    {
+      "archive": "S005-baseline-measured.zip",
+      "sha256": "fbfa6e90ed2846213ebdc679f7f43a940b0c47aa54c3ac7fdecbd52cdf49aeae",
+      "saved_records": 6,
+      "saved_image_occurrences": 6,
+      "crc": "pass",
+      "unique_safe_paths": "pass",
+      "exact_image_hashes": "pass",
+      "csv_manifest_roundtrip": "pass"
+    }
+  ]
+}

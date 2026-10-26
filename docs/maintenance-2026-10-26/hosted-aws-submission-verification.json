@@ -1,0 +1,30 @@
+{
+  "classification": "synthetic_engineering_verification",
+  "synthetic_only": true,
+  "participant_code": "S006",
+  "protocol_version": "HLL04-remote-table-v3",
+  "accepted_sequence": 5,
+  "accepted_kind": "submission",
+  "metadata_stable_during_read": true,
+  "metadata_document_sequence_match": true,
+  "no_image_bytes_or_credentials_in_payload": true,
+  "conditions": {
+    "baseline": {
+      "status": "completed",
+      "records": 6,
+      "exact_task_metadata_and_image_hashes": true,
+      "questionnaire_status": "completed",
+      "questionnaire_numeric_answers": 10,
+      "export_hash_and_open_confirmation_present": true
+    },
+    "guided": {
+      "status": "completed",
+      "records": 6,
+      "exact_task_metadata_and_image_hashes": true,
+      "questionnaire_status": "completed",
+      "questionnaire_numeric_answers": 10,
+      "export_hash_and_open_confirmation_present": true
+    }
+  },
+  "human_usability_evidence": false
+}

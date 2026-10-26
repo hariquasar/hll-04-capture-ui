@@ -62,6 +62,8 @@ For an authorized synthetic hosted run, set `HLL04_STUDY_TEST_URL`, `HLL04_STUDY
 
 Run suites sequentially. The loopback server uses the real backend's creation throttle (20 requests per hour per source address); restart that isolated in-memory server between repeated regression batches. Hosted throttles must be respected rather than bypassed.
 
+To repeat one recovery case, set `HLL04_STUDY_TEST_SCENARIO` to its exact scenario name. For example, `private receipt restores acknowledged metadata in another browser` executes only that case. The result records the number of executed scenarios and session-create requests; an unknown filter fails with zero session requests. The receipt case waits for the expected payload's server acknowledgement before testing restoration.
+
 ## Verification boundaries
 
 Automated assertions are regression checks, not participant observations. They do not establish usability, physical camera operation, actual human file opening, ethical approval, browser diversity, or general device support. Frozen prototype validation remains separate from this remote protocol's testing.

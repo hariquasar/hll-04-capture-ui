@@ -1,0 +1,25 @@
+{
+  "passed": 2,
+  "scenarios": [
+    {
+      "scenario": "submit",
+      "passed": true,
+      "network_sequence": [
+        "checkpoint",
+        "submit"
+      ],
+      "latest_state_preserved": true,
+      "synthetic_only": true
+    },
+    {
+      "scenario": "withdraw",
+      "passed": true,
+      "network_sequence": [
+        "checkpoint",
+        "withdraw"
+      ],
+      "latest_state_preserved": true,
+      "synthetic_only": true
+    }
+  ]
+}

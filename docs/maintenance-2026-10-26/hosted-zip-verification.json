@@ -1,0 +1,26 @@
+{
+  "synthetic_artifact_audit": true,
+  "archives_verified": 2,
+  "results": [
+    {
+      "archive": "baseline-six-records.zip",
+      "sha256": "fbfa6e90ed2846213ebdc679f7f43a940b0c47aa54c3ac7fdecbd52cdf49aeae",
+      "saved_records": 6,
+      "saved_image_occurrences": 6,
+      "crc": "pass",
+      "unique_safe_paths": "pass",
+      "exact_image_hashes": "pass",
+      "csv_manifest_roundtrip": "pass"
+    },
+    {
+      "archive": "guided-six-records.zip",
+      "sha256": "41b47cf3d993efd0e26de63ee1a4f6806dfe4624543ce4e409825b51e99cf748",
+      "saved_records": 6,
+      "saved_image_occurrences": 6,
+      "crc": "pass",
+      "unique_safe_paths": "pass",
+      "exact_image_hashes": "pass",
+      "csv_manifest_roundtrip": "pass"
+    }
+  ]
+}
